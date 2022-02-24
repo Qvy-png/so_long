@@ -14,7 +14,6 @@ NAME = so_long
 CC = gcc
 RM = rm
 OBJ = $(SRC:.c=.o)
-CFGLAGS = -Wall -Wextra -Werror
 SRC =	src/main.c\
 		src/map_alloc.c\
 		src/map_scan.c\
@@ -26,10 +25,10 @@ SRC =	src/main.c\
 all: $(NAME)
 
 %.o: %.c
-	$(CC) -Wall -Wextra -Werror -Imlx -c $< -o $@
+	$(CC)  -I/usr/include -Imlx_linux -O3 -c $< -o $@
 		
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) -Lmlx -Imlx -framework OpenGL -framework AppKit -o $(NAME)
+	$(CC) $(OBJ) -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
 
 clean:
 	$(RM) -f $(OBJ)

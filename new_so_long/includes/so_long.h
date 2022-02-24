@@ -19,7 +19,7 @@
 # include <string.h>
 # include <fcntl.h>
 # include "get_next_line.h"
-# include "mlx.h"
+# include <mlx.h>
 
 struct s_so_long
 {
@@ -32,6 +32,21 @@ struct s_so_long
 	char	**map;
 	int		is_rectangle;
 };
+
+typedef struct	s_data {
+	void	*img;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}				t_data;
+
+typedef struct	s_vars {
+	void	*mlx;
+	void	*win;
+	void	*mlx_win;
+	t_data	img;
+}				t_vars;
 
 int		last_char(char *str);
 int 	first_char(char *str);

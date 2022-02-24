@@ -72,11 +72,47 @@ int	filler(struct s_so_long *so_long, char **argv)
 	return (1);
 }
 
-void	exec()
+int	closing(int keycode, t_vars *vars)
 {
-	void	*mlx;
+	if (keycode == 65307)
+		mlx_destroy_window(vars->mlx, vars->win);
+	return (0);
+}
 
-	mlx = mlx_init();
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	*(unsigned int*)dst = color;
+}
+
+int	key_hook(int keycode, t_vars *vars)
+{
+	static int	i;
+
+	if (keycode == 119 || keycode == 97 || keycode == 115 || keycode == 100
+		|| keycode == 65361 || keycode == 65364 || keycode == 65363
+		|| keycode == 65362 || keycode == 165307)
+	{
+		i++;
+		printf("%d\n", i);
+		mlx_mouse_hide(vars->mlx, vars->win);
+	}
+	else if (keycode )
+		mlx_mouse_show(vars->mlx, vars->win);
+	return (0);
+}
+
+void	exec(void)
+{
+	t_vars	vars;
+
+	vars.mlx = mlx_init();
+	vars.win = mlx_new_window(vars.mlx, 640, 480, "Hello world!");
+	mlx_key_hook(vars.win, key_hook, &vars);
+	mlx_hook(vars.win, 2, 1L<<0, closing, &vars);
+	mlx_loop(vars.mlx);
 }
 
 // Gestion des erreurs de map, et si tout se passe bien, le programme avance
@@ -94,7 +130,7 @@ void	map_wiring(int i)
 	else if (i == -4)
 		printf("Error :\nIncorrect char found in map\n");
 	else
-		printf("Map is fine\n");
+		exec();
 }
 
 // Main, gère certaines erreurs et lance dans le programme les arguments
