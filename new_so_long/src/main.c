@@ -30,16 +30,16 @@ void	demallocage(struct s_so_long *so_long)
 
 // Permet d'initialiser les variables de la structure
 
-void	init_so_long(struct s_so_long *oui)
+void	init_so_long(struct s_so_long *so_long)
 {
-	oui->file_name = NULL;
-	oui->file_fd = 0;
-	oui->map_size = 0;
-	oui->map_x = 0;
-	oui->map_y = 0;
-	oui->map_but_its_a_string_actually = NULL;
-	oui->map = NULL;
-	oui->is_rectangle = 0;
+	so_long->file_name = NULL;
+	so_long->file_fd = 0;
+	so_long->map_size = 0;
+	so_long->map_x = 0;
+	so_long->map_y = 0;
+	so_long->map_but_its_a_string_actually = NULL;
+	so_long->map = NULL;
+	so_long->is_rectangle = 0;
 }
 
 // Permet de faire toute la récupération d'informations dans le fichier
@@ -71,6 +71,9 @@ int	filler(struct s_so_long *so_long, char **argv)
 	map_filler(so_long);
 	return (1);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 int	closing(int keycode, t_vars *vars)
 {
@@ -107,14 +110,19 @@ int	key_hook(int keycode, t_vars *vars)
 void	exec(void)
 {
 	t_vars	vars;
+	t_data	img;
 
 	vars.mlx = mlx_init();
 	vars.win = mlx_new_window(vars.mlx, 640, 480, "Hello world!");
+	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 	mlx_key_hook(vars.win, key_hook, &vars);
 	mlx_hook(vars.win, 2, 1L<<0, closing, &vars);
+	my_mlx_pixel_put(&img, 5, 5, 0x00FF0000);
 	mlx_loop(vars.mlx);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // Gestion des erreurs de map, et si tout se passe bien, le programme avance
 
 void	map_wiring(int i)
