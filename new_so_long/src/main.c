@@ -75,10 +75,9 @@ int	filler(struct s_so_long *so_long, char **argv)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-int	closing(int keycode, t_vars *vars)
+int	closing(int keycode, t_vars *vars, struct s_so_long *so_long)
 {
-	if (keycode == 65307)
-		mlx_destroy_window(vars->mlx, vars->win);
+	exit(0);
 	return (0);
 }
 
@@ -100,32 +99,55 @@ int	key_hook(int keycode, t_vars *vars)
 	{
 		i++;
 		printf("%d\n", i);
-		mlx_mouse_hide(vars->mlx, vars->win);
 	}
-	else if (keycode )
-		mlx_mouse_show(vars->mlx, vars->win);
+	if (keycode == 65307)
+		exit(0);
 	return (0);
 }
 
-void	exec(void)
+void	exec(struct s_so_long *so_long)
 {
 	t_vars	vars;
-	t_data	img;
 
+	char	*relative_path = "./test.xpm";
+	int		img_width;
+	int		img_height;
+	int	i;
+	int	j;
+
+	img_width = 0;
+	img_height = 0;
+	i = 0;
+	j = 0;
 	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, 640, 480, "Hello world!");
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
-	mlx_key_hook(vars.win, key_hook, &vars);
-	mlx_hook(vars.win, 2, 1L<<0, closing, &vars);
-	my_mlx_pixel_put(&img, 5, 5, 0x00FF0000);
+	vars.mlx_win = mlx_new_window(vars.mlx, so_long->map_x * 48, so_long->map_y * 48, "Hello world!");
+	vars.img.img = mlx_new_image(vars.mlx, 1920, 1080);
+	vars.img.addr = mlx_get_data_addr(vars.img.img, &vars.img.bits_per_pixel, &vars.img.line_length,
+								&vars.img.endian);
+	vars.img.img = mlx_xpm_file_to_image(vars.mlx, relative_path, &img_width, &img_height);
+	if (vars.img.img == NULL)
+		printf("xmp lecture has failed\n");
+	mlx_key_hook(vars.mlx_win, key_hook, &vars);
+	mlx_hook(vars.mlx_win, 17, 0, closing, &vars);
+	while (j < so_long->map_x * 48)
+	{
+		while (i < so_long->map_y * 48)
+		{
+			mlx_put_image_to_window(vars.mlx, vars.mlx_win, vars.img.img, i, j);
+			i += 48;
+		}
+		i = 0;
+		j += 48;
+	}
 	mlx_loop(vars.mlx);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
 // Gestion des erreurs de map, et si tout se passe bien, le programme avance
 
-void	map_wiring(int i)
+void	map_wiring(struct s_so_long *so_long, int i)
 {
 	if (i == 0)
 		printf("Error :\nMap too small!\n");
@@ -138,7 +160,7 @@ void	map_wiring(int i)
 	else if (i == -4)
 		printf("Error :\nIncorrect char found in map\n");
 	else
-		exec();
+		exec(so_long);
 }
 
 // Main, gère certaines erreurs et lance dans le programme les arguments
@@ -156,7 +178,7 @@ int	main(int argc, char **argv)
 			if (so_long == NULL)
 				return (0);
 			i = filler(so_long, argv);
-			map_wiring(i);
+			map_wiring(so_long, i);
 			demallocage(so_long);
 		}
 		else

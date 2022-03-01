@@ -33,6 +33,12 @@ struct s_so_long
 	int		is_rectangle;
 };
 
+struct s_images
+{
+	char	*hero;
+	char	*border;
+};
+
 typedef struct	s_data {
 	void	*img;
 	char	*addr;
@@ -59,12 +65,12 @@ int		filler(struct s_so_long *so_long, char **argv);
 
 char	*ft_strdup(char *src);
 
-void	map_wiring(int i);
 void	free_array(char **twoD);
 void	map_size(struct s_so_long *so_long);
 void	map_alloc(struct s_so_long *so_long);
 void	demallocage(struct s_so_long *so_long);
 void	map_tab_filler(struct s_so_long *so_long);
+void	map_wiring(struct s_so_long *so_long, int i);
 void	map_to_str(char *str, struct s_so_long *so_long);
 
 #endif

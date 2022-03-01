@@ -28,7 +28,7 @@ all: $(NAME)
 	$(CC)  -I/usr/include -Imlx_linux -O3 -c $< -o $@
 		
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
+	$(CC) $(OBJ) -g3 -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
 
 clean:
 	$(RM) -f $(OBJ)
@@ -40,5 +40,8 @@ re: fclean all
 
 norme:
 	norminette -R CheckForbiddenSourceHeader $(SRC)
+
+sanit:
+	$(CC) $(OBJ) -fsanitize=address -g3 -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
 
 .PHONY: clean fclean
