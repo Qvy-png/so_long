@@ -109,7 +109,8 @@ void	exec(struct s_so_long *so_long)
 {
 	t_vars	vars;
 
-	char	*relative_path = "images/wall.xpm";
+	char	*wall = "images/wall.xpm";
+	char	*hero = "images/hero.xpm";
 	int		img_width;
 	int		img_height;
 	int	x;
@@ -124,7 +125,7 @@ void	exec(struct s_so_long *so_long)
 	vars.img.img = mlx_new_image(vars.mlx, 1920, 1080);
 	vars.img.addr = mlx_get_data_addr(vars.img.img, &vars.img.bits_per_pixel, &vars.img.line_length,
 								&vars.img.endian);
-	vars.img.img = mlx_xpm_file_to_image(vars.mlx, relative_path, &img_width, &img_height);
+	vars.img.img = mlx_xpm_file_to_image(vars.mlx, wall, &img_width, &img_height);
 	if (vars.img.img == NULL)
 		printf("xmp lecture has failed\n");
 	mlx_key_hook(vars.mlx_win, key_hook, &vars);
