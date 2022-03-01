@@ -109,16 +109,16 @@ void	exec(struct s_so_long *so_long)
 {
 	t_vars	vars;
 
-	char	*relative_path = "./test.xpm";
+	char	*relative_path = "images/wall.xpm";
 	int		img_width;
 	int		img_height;
-	int	i;
-	int	j;
+	int	x;
+	int	y;
 
 	img_width = 0;
 	img_height = 0;
-	i = 0;
-	j = 0;
+	x = 0;
+	y = 0;
 	vars.mlx = mlx_init();
 	vars.mlx_win = mlx_new_window(vars.mlx, so_long->map_x * 48, so_long->map_y * 48, "Hello world!");
 	vars.img.img = mlx_new_image(vars.mlx, 1920, 1080);
@@ -129,15 +129,18 @@ void	exec(struct s_so_long *so_long)
 		printf("xmp lecture has failed\n");
 	mlx_key_hook(vars.mlx_win, key_hook, &vars);
 	mlx_hook(vars.mlx_win, 17, 0, closing, &vars);
-	while (j < so_long->map_x * 48)
+	while (y < so_long->map_y)
 	{
-		while (i < so_long->map_y * 48)
+		while (x < so_long->map_x)
 		{
-			mlx_put_image_to_window(vars.mlx, vars.mlx_win, vars.img.img, i, j);
-			i += 48;
+			if (so_long->map[y][x] == '1')
+			{
+				mlx_put_image_to_window(vars.mlx, vars.mlx_win, vars.img.img, x * 48, y * 48);
+			}
+			x++;
 		}
-		i = 0;
-		j += 48;
+		x = 0;
+		y++;
 	}
 	mlx_loop(vars.mlx);
 }
