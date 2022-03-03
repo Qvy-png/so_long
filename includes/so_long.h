@@ -33,11 +33,14 @@ struct s_so_long
 	int		is_rectangle;
 };
 
-struct s_images
+typedef struct s_images
 {
 	char	*hero;
-	char	*border;
-};
+	char	*wall;
+	char	*floor;
+	char	*collectible;
+	char	*exit;
+}				t_images;
 
 typedef struct	s_data {
 	void	*img;

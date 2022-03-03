@@ -105,19 +105,34 @@ int	key_hook(int keycode, t_vars *vars)
 	return (0);
 }
 
-void	exec(struct s_so_long *so_long)
+void	display_stuff(struct s_so_long *so_long, t_vars vars, char *str, int x, int y)
 {
-	t_vars	vars;
-
-	char	*wall = "images/wall.xpm";
-	char	*hero = "images/hero.xpm";
 	int		img_width;
 	int		img_height;
-	int	x;
-	int	y;
 
 	img_width = 0;
 	img_height = 0;
+	vars.img.img = mlx_xpm_file_to_image(vars.mlx, str, &img_width, &img_height);
+	if (vars.img.img == NULL)
+	{
+		printf("xmp lecture has failed\n");
+		demallocage(so_long);
+		exit(0);
+	}
+	mlx_put_image_to_window(vars.mlx, vars.mlx_win, vars.img.img, x * 48, y * 48);
+}
+
+void	exec(struct s_so_long *so_long)
+{
+	t_vars	vars;
+	t_images images;
+
+	images.wall = ft_strdup("images/wall.xpm");
+	images.hero = ft_strdup("images/hero.xpm");
+	images.floor = ft_strdup("images/floor.xpm");
+	int	x;
+	int	y;
+
 	x = 0;
 	y = 0;
 	vars.mlx = mlx_init();
@@ -125,9 +140,6 @@ void	exec(struct s_so_long *so_long)
 	vars.img.img = mlx_new_image(vars.mlx, 1920, 1080);
 	vars.img.addr = mlx_get_data_addr(vars.img.img, &vars.img.bits_per_pixel, &vars.img.line_length,
 								&vars.img.endian);
-	vars.img.img = mlx_xpm_file_to_image(vars.mlx, wall, &img_width, &img_height);
-	if (vars.img.img == NULL)
-		printf("xmp lecture has failed\n");
 	mlx_key_hook(vars.mlx_win, key_hook, &vars);
 	mlx_hook(vars.mlx_win, 17, 0, closing, &vars);
 	while (y < so_long->map_y)
@@ -136,7 +148,23 @@ void	exec(struct s_so_long *so_long)
 		{
 			if (so_long->map[y][x] == '1')
 			{
-				mlx_put_image_to_window(vars.mlx, vars.mlx_win, vars.img.img, x * 48, y * 48);
+				display_stuff(so_long, vars, images.wall, x, y);
+			}
+			if (so_long->map[y][x] == 'P')
+			{
+				display_stuff(so_long, vars, images.hero, x, y);
+			}
+			if (so_long->map[y][x] == 'C')
+			{
+				display_stuff(so_long, vars, images.hero, x, y);
+			}
+			if (so_long->map[y][x] == 'E')
+			{
+				display_stuff(so_long, vars, images.hero, x, y);
+			}
+			if (so_long->map[y][x] == '0')
+			{
+				display_stuff(so_long, vars, images.floor, x, y);
 			}
 			x++;
 		}
