@@ -68,7 +68,8 @@ int	filler(struct s_so_long *so_long, char **argv)
 	close(so_long->file_fd);
 	so_long->file_fd = open(so_long->file_name, O_RDONLY);
 	map_alloc(so_long);
-	map_filler(so_long);
+	if (map_filler(so_long) != 1)
+		return (-3);
 	return (1);
 }
 
@@ -89,7 +90,7 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-int	key_hook(int keycode, t_vars *vars)
+int	key_hook(int keycode, struct s_so_long *so_long)
 {
 	static int	i;
 
@@ -98,7 +99,9 @@ int	key_hook(int keycode, t_vars *vars)
 		|| keycode == 65362 || keycode == 165307)
 	{
 		i++;
+		so_long->hero.y += 48;
 		printf("%d\n", i);
+		
 	}
 	if (keycode == 65307)
 		exit(0);
@@ -122,26 +125,9 @@ void	display_stuff(struct s_so_long *so_long, t_vars vars, char *str, int x, int
 	mlx_put_image_to_window(vars.mlx, vars.mlx_win, vars.img.img, x * 48, y * 48);
 }
 
-void	exec(struct s_so_long *so_long)
+void display_map(struct s_so_long *so_long, t_vars vars, t_images images, int x, int y)
 {
-	t_vars	vars;
-	t_images images;
 
-	images.wall = ft_strdup("images/wall.xpm");
-	images.hero = ft_strdup("images/hero.xpm");
-	images.floor = ft_strdup("images/floor.xpm");
-	int	x;
-	int	y;
-
-	x = 0;
-	y = 0;
-	vars.mlx = mlx_init();
-	vars.mlx_win = mlx_new_window(vars.mlx, so_long->map_x * 48, so_long->map_y * 48, "Hello world!");
-	vars.img.img = mlx_new_image(vars.mlx, 1920, 1080);
-	vars.img.addr = mlx_get_data_addr(vars.img.img, &vars.img.bits_per_pixel, &vars.img.line_length,
-								&vars.img.endian);
-	mlx_key_hook(vars.mlx_win, key_hook, &vars);
-	mlx_hook(vars.mlx_win, 17, 0, closing, &vars);
 	while (y < so_long->map_y)
 	{
 		while (x < so_long->map_x)
@@ -150,7 +136,7 @@ void	exec(struct s_so_long *so_long)
 			{
 				display_stuff(so_long, vars, images.wall, x, y);
 			}
-			if (so_long->map[y][x] == 'P')
+			if (so_long->map[so_long->hero.y][so_long->hero.x] == 'P')
 			{
 				display_stuff(so_long, vars, images.hero, x, y);
 			}
@@ -171,6 +157,60 @@ void	exec(struct s_so_long *so_long)
 		x = 0;
 		y++;
 	}
+}
+
+void	exec(struct s_so_long *so_long)
+{
+	t_vars	vars;
+	t_images images;
+
+	images.wall = ft_strdup("images/wall.xpm");
+	images.hero = ft_strdup("images/hero.xpm");
+	images.floor = ft_strdup("images/floor.xpm");
+	int	x;
+	int	y;
+
+	x = 0;
+	y = 0;
+	so_long->hero.x = 48;
+	so_long->hero.y = 48;
+	vars.mlx = mlx_init();
+	vars.mlx_win = mlx_new_window(vars.mlx, so_long->map_x * 48, so_long->map_y * 48, "Hello world!");
+	vars.img.img = mlx_new_image(vars.mlx, so_long->map_x * 48, so_long->map_y * 48);
+	vars.img.addr = mlx_get_data_addr(vars.img.img, &vars.img.bits_per_pixel, &vars.img.line_length,
+								&vars.img.endian);
+	mlx_key_hook(vars.mlx_win, key_hook, so_long);	
+	mlx_hook(vars.mlx_win, 17, 0, closing, &vars);
+	display_map(so_long, vars, images, x, y);
+	// while (y < so_long->map_y)
+	// {
+	// 	while (x < so_long->map_x)
+	// 	{
+	// 		if (so_long->map[y][x] == '1')
+	// 		{
+	// 			display_stuff(so_long, vars, images.wall, x, y);
+	// 		}
+	// 		if (so_long->map[so_long->hero.y][so_long->hero.x] == 'P')
+	// 		{
+	// 			display_stuff(so_long, vars, images.hero, x, y);
+	// 		}
+	// 		if (so_long->map[y][x] == 'C')
+	// 		{
+	// 			display_stuff(so_long, vars, images.hero, x, y);
+	// 		}
+	// 		if (so_long->map[y][x] == 'E')
+	// 		{
+	// 			display_stuff(so_long, vars, images.hero, x, y);
+	// 		}
+	// 		if (so_long->map[y][x] == '0')
+	// 		{
+	// 			display_stuff(so_long, vars, images.floor, x, y);
+	// 		}
+	// 		x++;
+	// 	}
+	// 	x = 0;
+	// 	y++;
+	// }
 	mlx_loop(vars.mlx);
 }
 

@@ -21,27 +21,6 @@
 # include "get_next_line.h"
 # include <mlx.h>
 
-struct s_so_long
-{
-	char	*file_name;
-	int		file_fd;
-	int		map_size;
-	int		map_x;
-	int		map_y;
-	char	*map_but_its_a_string_actually;
-	char	**map;
-	int		is_rectangle;
-};
-
-typedef struct s_images
-{
-	char	*hero;
-	char	*wall;
-	char	*floor;
-	char	*collectible;
-	char	*exit;
-}				t_images;
-
 typedef struct	s_data {
 	void	*img;
 	char	*addr;
@@ -56,6 +35,36 @@ typedef struct	s_vars {
 	void	*mlx_win;
 	t_data	img;
 }				t_vars;
+
+typedef struct s_images
+{
+	char	*hero;
+	char	*wall;
+	char	*floor;
+	char	*collectible;
+	char	*exit;
+}				t_images;
+
+typedef struct s_hero
+{
+	int		x;
+	int		y;
+	char	*hero;
+}				t_hero;
+
+struct s_so_long
+{
+	char	*file_name;
+	int		file_fd;
+	int		map_size;
+	int		map_x;
+	int		map_y;
+	char	*map_but_its_a_string_actually;
+	char	**map;
+	int		is_rectangle;
+	t_hero	hero;
+};
+
 
 int		last_char(char *str);
 int 	first_char(char *str);
