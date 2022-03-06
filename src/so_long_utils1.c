@@ -40,7 +40,7 @@ int	is_dot_ber(char *name, char *extention)
 
 	i = ft_strlen(name);
 	j = ft_strlen(extention);
-	if (name[0] == '.' || name[i - 5] == '/') ///////////////////AAAAAAAAAAA FAIRE LES CONDITIONS CHELOUS POUR LE .BER
+	if (name[0] == '.' || name[i - 5] == '/')
 		return (0);
 	while (j >= 0)
 	{

@@ -172,8 +172,8 @@ void	exec(struct s_so_long *so_long)
 
 	x = 0;
 	y = 0;
-	so_long->hero.x = 48;
-	so_long->hero.y = 48;
+	so_long->hero.x = 0;
+	so_long->hero.y = 0;
 	vars.mlx = mlx_init();
 	vars.mlx_win = mlx_new_window(vars.mlx, so_long->map_x * 48, so_long->map_y * 48, "Hello world!");
 	vars.img.img = mlx_new_image(vars.mlx, so_long->map_x * 48, so_long->map_y * 48);
@@ -232,7 +232,10 @@ void	map_wiring(struct s_so_long *so_long, int i)
 	else if (i == -4)
 		printf("Error :\nIncorrect char found in map\n");
 	else
+	{
+		printf("%s\n", so_long->map_but_its_a_string_actually);
 		exec(so_long);
+	}
 }
 
 // Main, gère certaines erreurs et lance dans le programme les arguments
