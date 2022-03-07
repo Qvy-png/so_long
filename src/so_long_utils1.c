@@ -55,6 +55,30 @@ int	is_dot_ber(char *name, char *extention)
 	return (1);
 }
 
+void	record_hero(struct s_so_long *so_long)
+{
+	int	x;
+	int	y;
+
+	x = 0;
+	y = 0;
+	while (y < so_long->map_y)
+	{
+		while (x < so_long->map_x)
+		{
+			if (so_long->map[y][x] == 'P')
+			{
+				so_long->map[y][x] = '0';
+				so_long->hero.y = y * 48;
+				so_long->hero.x = x * 48;
+			}
+			x++;
+		}
+		x = 0;
+		y++;
+	}
+}
+
 // Free un tableau en 2D
 
 void	free_array(char **twoD)

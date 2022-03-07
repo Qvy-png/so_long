@@ -49,6 +49,7 @@ typedef struct s_hero
 {
 	int		x;
 	int		y;
+	int		angle;
 	char	*hero;
 }				t_hero;
 
@@ -78,8 +79,10 @@ int		filler(struct s_so_long *so_long, char **argv);
 char	*ft_strdup(char *src);
 
 void	free_array(char **twoD);
+
 void	map_size(struct s_so_long *so_long);
 void	map_alloc(struct s_so_long *so_long);
+void	record_hero(struct s_so_long *so_long);
 void	demallocage(struct s_so_long *so_long);
 void	map_tab_filler(struct s_so_long *so_long);
 void	map_wiring(struct s_so_long *so_long, int i);

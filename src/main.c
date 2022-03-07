@@ -70,6 +70,8 @@ int	filler(struct s_so_long *so_long, char **argv)
 	map_alloc(so_long);
 	if (map_filler(so_long) != 1)
 		return (-3);
+	record_hero(so_long);
+	printf("%d&%d\n\n", so_long->hero.x, so_long->hero.y);
 	return (1);
 }
 
@@ -78,8 +80,8 @@ int	filler(struct s_so_long *so_long, char **argv)
 
 int	closing(int keycode, t_vars *vars, struct s_so_long *so_long)
 {
+	demallocage(so_long);
 	exit(0);
-	return (0);
 }
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
@@ -97,14 +99,26 @@ int	key_hook(int keycode, struct s_so_long *so_long)
 	if (keycode == 119 || keycode == 97 || keycode == 115 || keycode == 100
 		|| keycode == 65361 || keycode == 65364 || keycode == 65363
 		|| keycode == 65362 || keycode == 165307)
-	{
 		i++;
-		so_long->hero.y += 48;
-		printf("%d\n", i);
-		
-	}
+	if (keycode == 119 || keycode == 65362)
+		if (so_long->hero.y > 48 && so_long->map[(so_long->hero.y / 48) - 1][so_long->hero.x / 48] != '1')
+			so_long->hero.y -= 48;
+	if (keycode == 97 || keycode == 65361)
+		if (so_long->hero.x > 48 && so_long->map[(so_long->hero.y / 48)][so_long->hero.x / 48 - 1] != '1')
+			so_long->hero.x -= 48;
+	if (keycode == 115 || keycode == 65364)
+		if (so_long->hero.y < (so_long->map_y * 48) - 96 && so_long->map[(so_long->hero.y / 48) + 1][so_long->hero.x / 48] != '1')
+			so_long->hero.y += 48;
+	if (keycode == 100 || keycode == 65363)
+		if (so_long->hero.x < (so_long->map_x * 48) - 96 && so_long->map[(so_long->hero.y / 48)][so_long->hero.x / 48 + 1] != '1')
+			so_long->hero.x += 48;
+
 	if (keycode == 65307)
+	{
+		demallocage(so_long);
 		exit(0);
+	}
+	printf("%d&%d\n\n", so_long->hero.x, so_long->hero.y);
 	return (0);
 }
 
@@ -127,7 +141,6 @@ void	display_stuff(struct s_so_long *so_long, t_vars vars, char *str, int x, int
 
 void display_map(struct s_so_long *so_long, t_vars vars, t_images images, int x, int y)
 {
-
 	while (y < so_long->map_y)
 	{
 		while (x < so_long->map_x)
@@ -135,10 +148,6 @@ void display_map(struct s_so_long *so_long, t_vars vars, t_images images, int x,
 			if (so_long->map[y][x] == '1')
 			{
 				display_stuff(so_long, vars, images.wall, x, y);
-			}
-			if (so_long->map[y][x] == 'P')
-			{
-				display_stuff(so_long, vars, images.hero, x, y);
 			}
 			if (so_long->map[y][x] == 'C')
 			{
@@ -172,16 +181,15 @@ void	exec(struct s_so_long *so_long)
 
 	x = 0;
 	y = 0;
-	so_long->hero.x = 0;
-	so_long->hero.y = 0;
 	vars.mlx = mlx_init();
 	vars.mlx_win = mlx_new_window(vars.mlx, so_long->map_x * 48, so_long->map_y * 48, "Hello world!");
 	vars.img.img = mlx_new_image(vars.mlx, so_long->map_x * 48, so_long->map_y * 48);
 	vars.img.addr = mlx_get_data_addr(vars.img.img, &vars.img.bits_per_pixel, &vars.img.line_length,
 								&vars.img.endian);
-	mlx_key_hook(vars.mlx_win, key_hook, so_long);	
-	mlx_hook(vars.mlx_win, 17, 0, closing, &vars);
 	display_map(so_long, vars, images, x, y);
+	mlx_key_hook(vars.mlx_win, key_hook, so_long);
+	mlx_hook(vars.mlx_win, 17, 0, closing, &vars);
+	display_stuff(so_long, vars, images.hero, so_long->hero.x, so_long->hero.y);
 	mlx_loop(vars.mlx);
 }
 
