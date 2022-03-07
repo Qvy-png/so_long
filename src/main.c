@@ -78,19 +78,25 @@ int	filler(struct s_so_long *so_long, char **argv)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+//Permet de fermer le programme et de le quitter proprement
+
 int	closing(int keycode, t_vars *vars, struct s_so_long *so_long)
 {
 	demallocage(so_long);
 	exit(0);
 }
 
+//Permet d'afficher les pixels d'une image
+
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
 	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
+	*(unsigned int *)dst = color;
 }
+
+//Permet d'enregistrer les appuis de touches
 
 int	key_hook(int keycode, struct s_so_long *so_long)
 {
@@ -118,9 +124,11 @@ int	key_hook(int keycode, struct s_so_long *so_long)
 		demallocage(so_long);
 		exit(0);
 	}
-	printf("%d&%d\n\n", so_long->hero.x, so_long->hero.y);
+	printf("%d&%d\n%d\n", so_long->hero.x, so_long->hero.y, i);
 	return (0);
 }
+
+//Permet d'afficher une texture
 
 void	display_stuff(struct s_so_long *so_long, t_vars vars, char *str, int x, int y)
 {
@@ -138,6 +146,8 @@ void	display_stuff(struct s_so_long *so_long, t_vars vars, char *str, int x, int
 	}
 	mlx_put_image_to_window(vars.mlx, vars.mlx_win, vars.img.img, x * 48, y * 48);
 }
+
+//Affiche la map de base
 
 void display_map(struct s_so_long *so_long, t_vars vars, t_images images, int x, int y)
 {
@@ -167,6 +177,8 @@ void display_map(struct s_so_long *so_long, t_vars vars, t_images images, int x,
 		y++;
 	}
 }
+
+//Exécution principale de l'affichage
 
 void	exec(struct s_so_long *so_long)
 {
