@@ -12,6 +12,12 @@
 
 #ifndef SO_LONG_H
 # define SO_LONG_H
+# define NBR_TXTR 5
+# define HERO_TXTR 0
+# define WALL_TXTR 1
+# define FLOOR_TXTR 2
+# define COLLECTIBLE_TXTR 3
+# define EXIT_TXTR 4
 
 # include <unistd.h>
 # include <stdio.h>
@@ -36,15 +42,6 @@ typedef struct	s_vars {
 	t_data	img;
 }				t_vars;
 
-typedef struct s_images
-{
-	char	*hero;
-	char	*wall;
-	char	*floor;
-	char	*collectible;
-	char	*exit;
-}				t_images;
-
 typedef struct s_hero
 {
 	int		x;
@@ -52,6 +49,15 @@ typedef struct s_hero
 	int		angle;
 	char	*hero;
 }				t_hero;
+
+enum
+{
+	HERO,
+	WALL = '1',
+	FLOOR = '0',
+	COLLECTIBLE = 'C',
+	EXIT = 'E'
+};
 
 struct s_so_long
 {
@@ -64,6 +70,9 @@ struct s_so_long
 	char	**map;
 	int		is_rectangle;
 	t_hero	hero;
+	char	*txtr[NBR_TXTR];
+	int		x;
+	int		y;
 };
 
 

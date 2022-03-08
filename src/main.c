@@ -42,11 +42,25 @@ void	init_so_long(struct s_so_long *so_long)
 	so_long->is_rectangle = 0;
 }
 
+struct s_so_long	*singleton(void)
+{
+	static struct s_so_long	*s;
+
+	if (!s)
+	{
+		s = malloc(sizeof(struct s_so_long));
+		if (!s)
+			return (NULL);
+	}
+	return (s);
+}
+
 // Permet de faire toute la récupération d'informations dans le fichier
 // renvoie un int
 
 int	filler(struct s_so_long *so_long, char **argv)
 {
+	singleton()->map;
 	init_so_long(so_long);
 	so_long->file_name = argv[1];
 	so_long->file_fd = open(so_long->file_name, O_RDONLY);
@@ -96,38 +110,6 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-//Permet d'enregistrer les appuis de touches
-
-int	key_hook(int keycode, struct s_so_long *so_long)
-{
-	static int	i;
-
-	if (keycode == 119 || keycode == 97 || keycode == 115 || keycode == 100
-		|| keycode == 65361 || keycode == 65364 || keycode == 65363
-		|| keycode == 65362 || keycode == 165307)
-		i++;
-	if (keycode == 119 || keycode == 65362)
-		if (so_long->hero.y > 48 && so_long->map[(so_long->hero.y / 48) - 1][so_long->hero.x / 48] != '1')
-			so_long->hero.y -= 48;
-	if (keycode == 97 || keycode == 65361)
-		if (so_long->hero.x > 48 && so_long->map[(so_long->hero.y / 48)][so_long->hero.x / 48 - 1] != '1')
-			so_long->hero.x -= 48;
-	if (keycode == 115 || keycode == 65364)
-		if (so_long->hero.y < (so_long->map_y * 48) - 96 && so_long->map[(so_long->hero.y / 48) + 1][so_long->hero.x / 48] != '1')
-			so_long->hero.y += 48;
-	if (keycode == 100 || keycode == 65363)
-		if (so_long->hero.x < (so_long->map_x * 48) - 96 && so_long->map[(so_long->hero.y / 48)][so_long->hero.x / 48 + 1] != '1')
-			so_long->hero.x += 48;
-
-	if (keycode == 65307)
-	{
-		demallocage(so_long);
-		exit(0);
-	}
-	printf("%d&%d\n%d\n", so_long->hero.x, so_long->hero.y, i);
-	return (0);
-}
-
 //Permet d'afficher une texture
 
 void	display_stuff(struct s_so_long *so_long, t_vars vars, char *str, int x, int y)
@@ -137,6 +119,7 @@ void	display_stuff(struct s_so_long *so_long, t_vars vars, char *str, int x, int
 
 	img_width = 0;
 	img_height = 0;
+	printf("texture = %s\n", str);
 	vars.img.img = mlx_xpm_file_to_image(vars.mlx, str, &img_width, &img_height);
 	if (vars.img.img == NULL)
 	{
@@ -147,35 +130,77 @@ void	display_stuff(struct s_so_long *so_long, t_vars vars, char *str, int x, int
 	mlx_put_image_to_window(vars.mlx, vars.mlx_win, vars.img.img, x * 48, y * 48);
 }
 
+//Permet de simplifier la foncion display_map
+
+void	display_simplifyer(t_vars vars, char c, char *str)
+{
+	if (singleton()->map[singleton()->y][singleton()->x] == c)
+	{
+		display_stuff(singleton(), vars, str, singleton()->x, singleton()->y);
+	}
+}
+
 //Affiche la map de base
 
-void display_map(struct s_so_long *so_long, t_vars vars, t_images images, int x, int y)
+int	display_map(t_vars vars)
 {
-	while (y < so_long->map_y)
+	singleton()->x = 0;
+	singleton()->y = 0;
+	while (singleton()->y < singleton()->map_y)
 	{
-		while (x < so_long->map_x)
+		while (singleton()->x < singleton()->map_x)
 		{
-			if (so_long->map[y][x] == '1')
-			{
-				display_stuff(so_long, vars, images.wall, x, y);
-			}
-			if (so_long->map[y][x] == 'C')
-			{
-				display_stuff(so_long, vars, images.hero, x, y);
-			}
-			if (so_long->map[y][x] == 'E')
-			{
-				display_stuff(so_long, vars, images.hero, x, y);
-			}
-			if (so_long->map[y][x] == '0')
-			{
-				display_stuff(so_long, vars, images.floor, x, y);
-			}
-			x++;
+			display_simplifyer(vars, WALL,
+				singleton()->txtr[WALL_TXTR]);
+			display_simplifyer(vars, FLOOR,
+				singleton()->txtr[FLOOR_TXTR]);
+			display_simplifyer(vars, COLLECTIBLE,
+				singleton()->txtr[HERO_TXTR]);
+			display_simplifyer(vars, EXIT,
+				singleton()->txtr[HERO_TXTR]);
+			singleton()->x++;
 		}
-		x = 0;
-		y++;
+		singleton()->x = 0;
+		singleton()->y++;
 	}
+//	display_stuff(singleton(), vars, singleton()->txtr[HERO_TXTR], singleton()->hero.x, singleton()->hero.y);
+	return (0);
+}
+
+void	key_hook_simplifyer()
+{
+
+}
+
+//Permet d'enregistrer les appuis de touches
+
+int	key_hook(int keycode, t_vars vars)
+{
+	static int	i;
+
+	if (keycode == 119 || keycode == 97 || keycode == 115 || keycode == 100
+		|| keycode == 65361 || keycode == 65364 || keycode == 65363
+		|| keycode == 65362 || keycode == 165307)
+		i++;
+	if (keycode == 119 || keycode == 65362)
+		if (singleton()->hero.y > 48 && singleton()->map[(singleton()->hero.y / 48) - 1][singleton()->hero.x / 48] != '1')
+			singleton()->hero.y -= 48;
+	if (keycode == 97 || keycode == 65361)
+		if (singleton()->hero.x > 48 && singleton()->map[(singleton()->hero.y / 48)][singleton()->hero.x / 48 - 1] != '1')
+			singleton()->hero.x -= 48;
+	if (keycode == 115 || keycode == 65364)
+		if (singleton()->hero.y < (singleton()->map_y * 48) - 96 && singleton()->map[(singleton()->hero.y / 48) + 1][singleton()->hero.x / 48] != '1')
+			singleton()->hero.y += 48;
+	if (keycode == 100 || keycode == 65363)
+		if (singleton()->hero.x < (singleton()->map_x * 48) - 96 && singleton()->map[(singleton()->hero.y / 48)][singleton()->hero.x / 48 + 1] != '1')
+			singleton()->hero.x += 48;
+	if (keycode == 65307)
+	{
+		demallocage(singleton());
+		exit(0);
+	}
+	printf("%d&%d\n%d\n", singleton()->hero.x, singleton()->hero.y, i);
+	return (0);
 }
 
 //Exécution principale de l'affichage
@@ -183,25 +208,24 @@ void display_map(struct s_so_long *so_long, t_vars vars, t_images images, int x,
 void	exec(struct s_so_long *so_long)
 {
 	t_vars	vars;
-	t_images images;
 
-	images.wall = ft_strdup("images/wall.xpm");
-	images.hero = ft_strdup("images/hero.xpm");
-	images.floor = ft_strdup("images/floor.xpm");
+	so_long->txtr[HERO_TXTR] = ft_strdup("images/hero.xpm");
+	so_long->txtr[WALL_TXTR] = ft_strdup("images/wall.xpm");
+	so_long->txtr[FLOOR_TXTR] = ft_strdup("images/floor.xpm");
+	so_long->txtr[COLLECTIBLE_TXTR] = ft_strdup("images/hero.xpm");
+	so_long->txtr[EXIT_TXTR] = ft_strdup("images/hero.xpm");
 	int	x;
 	int	y;
 
-	x = 0;
-	y = 0;
 	vars.mlx = mlx_init();
-	vars.mlx_win = mlx_new_window(vars.mlx, so_long->map_x * 48, so_long->map_y * 48, "Hello world!");
+	vars.mlx_win = mlx_new_window(vars.mlx, so_long->map_x * 48, so_long->map_y * 48, "so_long");
 	vars.img.img = mlx_new_image(vars.mlx, so_long->map_x * 48, so_long->map_y * 48);
 	vars.img.addr = mlx_get_data_addr(vars.img.img, &vars.img.bits_per_pixel, &vars.img.line_length,
 								&vars.img.endian);
-	display_map(so_long, vars, images, x, y);
-	mlx_key_hook(vars.mlx_win, key_hook, so_long);
+	display_map(vars);
+	mlx_key_hook(vars.mlx_win, key_hook, &vars);
 	mlx_hook(vars.mlx_win, 17, 0, closing, &vars);
-	display_stuff(so_long, vars, images.hero, so_long->hero.x, so_long->hero.y);
+	// mlx_loop_hook(vars.mlx, display_map, &vars);
 	mlx_loop(vars.mlx);
 }
 
@@ -240,8 +264,8 @@ int	main(int argc, char **argv)
 	{
 		if (is_dot_ber(argv[1], ".ber") == 1)
 		{
-			so_long = malloc(sizeof(struct s_so_long));
-			if (so_long == NULL)
+			so_long = singleton();
+			if (!so_long)
 				return (0);
 			i = filler(so_long, argv);
 			map_wiring(so_long, i);
