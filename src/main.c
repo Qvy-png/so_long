@@ -31,6 +31,9 @@ struct s_so_long	*s(void)
 
 void	demallocage(struct s_so_long *so_long)
 {
+	int	i;
+
+	i = 0;
 	if (so_long)
 	{
 		if (so_long->map_but_its_a_string_actually)
@@ -39,6 +42,8 @@ void	demallocage(struct s_so_long *so_long)
 			free_array(so_long->map);
 		if (so_long->file_fd)
 			close(so_long->file_fd);
+		while (i != NBR_TXTR - 1)
+			free(so_long->txtr[i++]);
 		free(so_long);
 	}
 }
@@ -154,7 +159,7 @@ int	display_map(t_vars *vars)
 {
 	s()->x = 0;
 	s()->y = 0;
-	
+
 	while (s()->y < s()->map_y)
 	{
 		while (s()->x < s()->map_x)
@@ -163,13 +168,12 @@ int	display_map(t_vars *vars)
 			display_simplifyer(vars, FLOOR, s()->txtr[FLOOR_TXTR]);
 			display_simplifyer(vars, COLLECTIBLE, s()->txtr[HERO_TXTR]);
 			display_simplifyer(vars, EXIT, s()->txtr[HERO_TXTR]);
-
+			display_stuff(vars, s()->txtr[HERO_TXTR], (s()->hero.x / 48), (s()->hero.y / 48));
 			s()->x++;
 		}
 		s()->x = 0;
 		s()->y++;
 	}
-	display_stuff(vars, s()->txtr[HERO_TXTR], s()->hero.x, s()->hero.y);
 	return (0);
 }
 
@@ -181,26 +185,26 @@ int	key_hook(int keycode, t_vars *vars)
 
 	if (keycode == 119 || keycode == 97 || keycode == 115 || keycode == 100
 		|| keycode == 65361 || keycode == 65364 || keycode == 65363
-		|| keycode == 65362 || keycode == 165307)
-		i++;
-	if (keycode == 119 || keycode == 65362)
-		if (s()->hero.y > 48 && s()->map[(s()->hero.y / 48) - 1][s()->hero.x / 48] != '1')
-			s()->hero.y -= 48;
-	if (keycode == 97 || keycode == 65361)
-		if (s()->hero.x > 48 && s()->map[(s()->hero.y / 48)][s()->hero.x / 48 - 1] != '1')
-			s()->hero.x -= 48;
-	if (keycode == 115 || keycode == 65364)
-		if (s()->hero.y < (s()->map_y * 48) - 96 && s()->map[(s()->hero.y / 48) + 1][s()->hero.x / 48] != '1')
-			s()->hero.y += 48;
-	if (keycode == 100 || keycode == 65363)
-		if (s()->hero.x < (s()->map_x * 48) - 96 && s()->map[(s()->hero.y / 48)][s()->hero.x / 48 + 1] != '1')
-			s()->hero.x += 48;
-	if (keycode == 65307)
+		|| keycode == 65362 || keycode == 165307 || keycode == 65307)
 	{
-		demallocage(s());
-		exit(0);
+		if (keycode == 119 || keycode == 65362)
+			if (s()->hero.y > 48 && s()->map[(s()->hero.y / 48) - 1][s()->hero.x / 48] != '1')
+				{s()->hero.y -= 48;i++;printf("x=%d & y=%d\n%d\n", s()->hero.x, s()->hero.y, i);}
+		if (keycode == 97 || keycode == 65361)
+			if (s()->hero.x > 48 && s()->map[(s()->hero.y / 48)][s()->hero.x / 48 - 1] != '1')
+				{s()->hero.x -= 48;i++;printf("x=%d & y=%d\n%d\n", s()->hero.x, s()->hero.y, i);}
+		if (keycode == 115 || keycode == 65364)
+			if (s()->hero.y < (s()->map_y * 48) - 96 && s()->map[(s()->hero.y / 48) + 1][s()->hero.x / 48] != '1')
+				{s()->hero.y += 48;i++;printf("x=%d & y=%d\n%d\n", s()->hero.x, s()->hero.y, i);}
+		if (keycode == 100 || keycode == 65363)
+			if (s()->hero.x < (s()->map_x * 48) - 96 && s()->map[(s()->hero.y / 48)][s()->hero.x / 48 + 1] != '1')
+				{s()->hero.x += 48;i++;printf("x=%d & y=%d\n%d\n", s()->hero.x, s()->hero.y, i);}
+		if (keycode == 65307)
+		{
+			demallocage(s());
+			exit(0);
+		}
 	}
-	printf("x=%d & y=%d\n%d\n", s()->hero.x, s()->hero.y, i);
 	return (0);
 }
 
@@ -216,10 +220,11 @@ void	exec(struct s_so_long *so_long, t_vars *vars)
 	vars->img.addr = mlx_get_data_addr(vars->img.img, &vars->img.bits_per_pixel, &vars->img.line_length,
 								&vars->img.endian);
 	display_map(vars);
+	
 	mlx_key_hook(vars->mlx_win, key_hook, &vars);
 	mlx_hook(vars->mlx_win, 17, 0, closing, &vars);
-	printf("aaaaa\n");
 	mlx_loop_hook(vars->mlx, display_map, vars);
+	
 	mlx_loop(vars->mlx);
 }
 
