@@ -83,7 +83,7 @@ int		map_width(struct s_so_long *so_long);
 int		map_height(struct s_so_long *so_long);
 int		is_dot_ber(char *name, char *extention);
 int		is_supposed_to_be_in_map(struct s_so_long *so_long);
-int		filler(struct s_so_long *so_long, char **argv);
+int		filler(struct s_so_long *so_long, char **argv, t_vars *vars);
 
 char	*ft_strdup(char *src);
 
@@ -94,7 +94,7 @@ void	map_alloc(struct s_so_long *so_long);
 void	record_hero(struct s_so_long *so_long);
 void	demallocage(struct s_so_long *so_long);
 void	map_tab_filler(struct s_so_long *so_long);
-void	map_wiring(struct s_so_long *so_long, int i);
+void	map_wiring(struct s_so_long *so_long, int i, t_vars *vars);
 void	map_to_str(char *str, struct s_so_long *so_long);
 
 #endif
