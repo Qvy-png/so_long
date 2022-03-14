@@ -92,7 +92,7 @@ void	free_array(char **twoD);
 void	map_size(struct s_so_long *so_long);
 void	map_alloc(struct s_so_long *so_long);
 void	record_hero(struct s_so_long *so_long);
-void	demallocage(struct s_so_long *so_long);
+void	demallocage(struct s_so_long *so_long, t_vars *vars);
 void	map_tab_filler(struct s_so_long *so_long);
 void	map_wiring(struct s_so_long *so_long, int i, t_vars *vars);
 void	map_to_str(char *str, struct s_so_long *so_long);

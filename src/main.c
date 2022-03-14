@@ -29,7 +29,7 @@ struct s_so_long	*s(void)
 
 // Permet de clean à la fin du programme
 
-void	demallocage(struct s_so_long *so_long)
+void	demallocage(struct s_so_long *so_long, t_vars *vars)
 {
 	int	i;
 
@@ -42,10 +42,14 @@ void	demallocage(struct s_so_long *so_long)
 			free_array(so_long->map);
 		if (so_long->file_fd)
 			close(so_long->file_fd);
-		while (i != NBR_TXTR - 1)
+		while (i != NBR_TXTR)
 			free(so_long->txtr[i++]);
 		free(so_long);
 	}
+	// mlx_destroy_window(vars->mlx, vars->win);
+	// mlx_destroy_display(vars->mlx);
+	// mlx_destroy_image(vars->mlx, vars->img.img);
+	free(vars->mlx);
 }
 
 // Permet d'initialiser les variables de la structure
@@ -109,7 +113,7 @@ int	filler(struct s_so_long *so_long, char **argv, t_vars *vars)
 
 int	closing(int keycode, t_vars *vars, struct s_so_long *so_long)
 {
-	demallocage(so_long);
+	demallocage(so_long, vars);
 	exit(0);
 }
 
@@ -132,15 +136,17 @@ void	display_stuff(t_vars *vars, char *str, int x, int y)
 
 	width = 0;
 	height = 0;
+	mlx_destroy_image(vars->mlx, vars->img.img);
 	vars->img.img = mlx_xpm_file_to_image(vars->mlx, str, &width, &height);
 	if (vars->img.img == NULL)
 	{
 		printf("xmp lecture has failed\n");
-		demallocage(s());
+		demallocage(s(), vars);
 		exit(0);
 	}
 	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->img.img,
 		x * 48, y * 48);
+
 }
 
 //Permet de simplifier la foncion display_map
@@ -149,6 +155,7 @@ void	display_simplifyer(t_vars *vars, char c, char *str)
 {
 	if (s()->map[s()->y][s()->x] == c)
 	{
+
 		display_stuff(vars, str, s()->x, s()->y);
 	}
 }
@@ -168,7 +175,8 @@ int	display_map(t_vars *vars)
 			display_simplifyer(vars, FLOOR, s()->txtr[FLOOR_TXTR]);
 			display_simplifyer(vars, COLLECTIBLE, s()->txtr[HERO_TXTR]);
 			display_simplifyer(vars, EXIT, s()->txtr[HERO_TXTR]);
-			display_stuff(vars, s()->txtr[HERO_TXTR], (s()->hero.x / 48), (s()->hero.y / 48));
+			display_stuff(vars, s()->txtr[HERO_TXTR], (s()->hero.x / 48),
+				(s()->hero.y / 48));
 			s()->x++;
 		}
 		s()->x = 0;
@@ -201,7 +209,7 @@ int	key_hook(int keycode, t_vars *vars)
 				{s()->hero.x += 48;i++;printf("x=%d & y=%d\n%d\n", s()->hero.x, s()->hero.y, i);}
 		if (keycode == 65307)
 		{
-			demallocage(s());
+			demallocage(s(), vars);
 			exit(0);
 		}
 	}
@@ -219,8 +227,6 @@ void	exec(struct s_so_long *so_long, t_vars *vars)
 	vars->img.img = mlx_new_image(vars->mlx, so_long->map_x * 48, so_long->map_y * 48);
 	vars->img.addr = mlx_get_data_addr(vars->img.img, &vars->img.bits_per_pixel, &vars->img.line_length,
 								&vars->img.endian);
-	display_map(vars);
-	
 	mlx_key_hook(vars->mlx_win, key_hook, &vars);
 	mlx_hook(vars->mlx_win, 17, 0, closing, &vars);
 	mlx_loop_hook(vars->mlx, display_map, vars);
@@ -272,7 +278,7 @@ int	main(int argc, char **argv)
 				return (0);
 			i = filler(so_long, argv, vars);
 			map_wiring(so_long, i, vars);
-			demallocage(so_long);
+			demallocage(so_long, vars);
 		}
 		else
 			printf("Error :\nWrong file type!\n");
