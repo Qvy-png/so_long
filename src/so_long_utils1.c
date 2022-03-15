@@ -94,3 +94,19 @@ void	free_array(char **twoD)
 	if (twoD)
 		free(twoD);
 }
+
+int	cnt_collect(char *str)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		if (str[i] == 'C')
+			j++;
+		i++;
+	}
+	return (j);
+}

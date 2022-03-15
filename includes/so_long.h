@@ -73,11 +73,13 @@ struct s_so_long
 	char	*txtr[NBR_TXTR];
 	int		x;
 	int		y;
+	int		collect_num;
 };
 
 
 int		last_char(char *str);
 int 	first_char(char *str);
+int		cnt_collect(char *str);
 int		map_filler(struct s_so_long *so_long);
 int		map_width(struct s_so_long *so_long);
 int		map_height(struct s_so_long *so_long);
