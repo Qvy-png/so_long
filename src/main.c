@@ -209,7 +209,6 @@ int	key_hook_simplifyer(char hero, char c, int i)
 		if (hero == 'y')
 		{
 			s()->hero.y -= 48;
-
 		}
 		if (hero == 'x')
 			s()->hero.x -= 48;
@@ -239,15 +238,15 @@ int	key_hook(int keycode, t_vars *vars)
 			i = key_hook_simplifyer('y', '-', i);
 	if (keycode == 97)
 		if (s()->hero.x > 48
-		&& s()->map[(s()->hero.y / 48)][s()->hero.x / 48 - 1] != '1')
+			&& s()->map[(s()->hero.y / 48)][s()->hero.x / 48 - 1] != '1')
 			i = key_hook_simplifyer('x', '-', i);
 	if (keycode == 115)
 		if (s()->hero.y < (s()->map_y * 48) - 96
-		&& s()->map[(s()->hero.y / 48) + 1][s()->hero.x / 48] != '1')
+			&& s()->map[(s()->hero.y / 48) + 1][s()->hero.x / 48] != '1')
 			i = key_hook_simplifyer('y', '+', i);
 	if (keycode == 100)
 		if (s()->hero.x < (s()->map_x * 48) - 96
-		&& s()->map[(s()->hero.y / 48)][s()->hero.x / 48 + 1] != '1')
+			&& s()->map[(s()->hero.y / 48)][s()->hero.x / 48 + 1] != '1')
 			i = key_hook_simplifyer('x', '+', i);
 	if (keycode == 65307)
 		demallocage(s(), vars);
