@@ -177,6 +177,7 @@ void	display_map_sec(t_vars *vars)
 }
 
 //Affiche la map de base
+//Renvoie un int
 
 int	display_map(t_vars *vars)
 {
@@ -197,7 +198,36 @@ int	display_map(t_vars *vars)
 	return (0);
 }
 
+//Permet de simplifier keyhook, ainsi que de ne pas compter quand on avance dans
+//un mur
+//renvoie un int
+
+int	key_hook_simplifyer(char hero, char c, int i)
+{
+	if (c == '-')
+	{
+		if (hero == 'y')
+		{
+			s()->hero.y -= 48;
+
+		}
+		if (hero == 'x')
+			s()->hero.x -= 48;
+	}
+	if (c == '+')
+	{
+		if (hero == 'y')
+			s()->hero.y += 48;
+		if (hero == 'x')
+			s()->hero.x += 48;
+	}
+	i++;
+	printf("%d\n", i);
+	return (i);
+}
+
 //Permet d'enregistrer les appuis de touches
+//renvoie un int
 
 int	key_hook(int keycode, t_vars *vars)
 {
@@ -206,22 +236,21 @@ int	key_hook(int keycode, t_vars *vars)
 	if (keycode == 119)
 		if (s()->hero.y > 48
 			&& s()->map[(s()->hero.y / 48) - 1][s()->hero.x / 48] != '1')
-			{s()->hero.y -= 48; i++;}
+			i = key_hook_simplifyer('y', '-', i);
 	if (keycode == 97)
 		if (s()->hero.x > 48
 		&& s()->map[(s()->hero.y / 48)][s()->hero.x / 48 - 1] != '1')
-			{s()->hero.x -= 48;i++;}
+			i = key_hook_simplifyer('x', '-', i);
 	if (keycode == 115)
 		if (s()->hero.y < (s()->map_y * 48) - 96
 		&& s()->map[(s()->hero.y / 48) + 1][s()->hero.x / 48] != '1')
-			{s()->hero.y += 48;i++;}
+			i = key_hook_simplifyer('y', '+', i);
 	if (keycode == 100)
 		if (s()->hero.x < (s()->map_x * 48) - 96
 		&& s()->map[(s()->hero.y / 48)][s()->hero.x / 48 + 1] != '1')
-			{s()->hero.x += 48;i++;}
+			i = key_hook_simplifyer('x', '+', i);
 	if (keycode == 65307)
 		demallocage(s(), vars);
-	printf("%d\n", i);
 	return (0);
 }
 
