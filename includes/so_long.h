@@ -74,29 +74,38 @@ struct s_so_long
 	int		x;
 	int		y;
 	int		collect_num;
+	int		col;
+	int		ex;
+	int		her;
 };
-
 
 int		last_char(char *str);
 int 	first_char(char *str);
 int		cnt_collect(char *str);
-int		map_filler(struct s_so_long *so_long);
+int		display_map(t_vars *vars);
+int		key_hook(int keycode, t_vars *vars);
 int		map_width(struct s_so_long *so_long);
 int		map_height(struct s_so_long *so_long);
+int		map_filler(struct s_so_long *so_long);
 int		is_dot_ber(char *name, char *extention);
 int		is_supposed_to_be_in_map(struct s_so_long *so_long);
 int		filler(struct s_so_long *so_long, char **argv, t_vars *vars);
+int		closing(int keycode, t_vars *vars, struct s_so_long *so_long);
 
 char	*ft_strdup(char *src);
 
 void	free_array(char **twoD);
-
+void	display_map_sec(t_vars *vars);
 void	map_size(struct s_so_long *so_long);
 void	map_alloc(struct s_so_long *so_long);
 void	record_hero(struct s_so_long *so_long);
-void	demallocage(struct s_so_long *so_long, t_vars *vars);
 void	map_tab_filler(struct s_so_long *so_long);
-void	map_wiring(struct s_so_long *so_long, int i, t_vars *vars);
+void	exec(struct s_so_long *so_long, t_vars *vars);
 void	map_to_str(char *str, struct s_so_long *so_long);
+void	display_simplifyer(t_vars *vars, char c, char *str);
+void	display_stuff(t_vars *vars, char *str, int x, int y);
+void	demallocage(struct s_so_long *so_long, t_vars *vars);
+void	map_wiring(struct s_so_long *so_long, int i, t_vars *vars);
+void	filler_sec(struct s_so_long *so_long, char **argv, t_vars *vars);
 
 #endif
