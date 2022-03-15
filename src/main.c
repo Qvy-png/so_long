@@ -70,7 +70,7 @@ void	init_so_long(struct s_so_long *so_long, t_vars *vars)
 	so_long->txtr[HERO_TXTR] = ft_strdup("images/hero.xpm");
 	so_long->txtr[WALL_TXTR] = ft_strdup("images/wall.xpm");
 	so_long->txtr[FLOOR_TXTR] = ft_strdup("images/floor.xpm");
-	so_long->txtr[COLLECTIBLE_TXTR] = ft_strdup("images/hero.xpm");
+	so_long->txtr[COLLECTIBLE_TXTR] = ft_strdup("images/collectible.xpm");
 	so_long->txtr[EXIT_TXTR] = ft_strdup("images/exit.xpm");
 	so_long->collect_num = 0;
 	so_long->ex = 0;
@@ -166,7 +166,7 @@ void	display_map_sec(t_vars *vars)
 	{
 		display_simplifyer(vars, WALL, s()->txtr[WALL_TXTR]);
 		display_simplifyer(vars, FLOOR, s()->txtr[FLOOR_TXTR]);
-		display_simplifyer(vars, COLLECTIBLE, s()->txtr[HERO_TXTR]);
+		display_simplifyer(vars, COLLECTIBLE, s()->txtr[COLLECTIBLE_TXTR]);
 		display_simplifyer(vars, EXIT, s()->txtr[EXIT_TXTR]);
 		display_stuff(vars, s()->txtr[HERO_TXTR], (s()->hero.x / 48),
 			(s()->hero.y / 48));
