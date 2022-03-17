@@ -53,6 +53,33 @@ void	demallocage(struct s_so_long *so_long, t_vars *vars)
 	exit(0);
 }
 
+/////////VERY UNSURE
+
+void	justfree(struct s_so_long *so_long, t_vars *vars)
+{
+	int	i;
+
+	i = 0;
+	if (so_long)
+	{
+		if (so_long->map_but_its_a_string_actually)
+			free(so_long->map_but_its_a_string_actually);
+		if (so_long->map)
+			free_array(so_long->map);
+		if (so_long->file_fd)
+			close(so_long->file_fd);
+		while (i != NBR_TXTR)
+			free(so_long->txtr[i++]);
+		free(so_long);
+	}
+	// mlx_destroy_image(vars->mlx, vars->img.img);
+	// mlx_destroy_display(vars->mlx);
+	// mlx_destroy_window(vars->mlx, vars->win);	
+	 free(vars->mlx);
+	exit(0);
+}
+
+
 // Permet d'initialiser les variables de la structure
 
 void	init_so_long(struct s_so_long *so_long, t_vars *vars)
@@ -124,7 +151,8 @@ int	filler(struct s_so_long *so_long, char **argv, t_vars *vars)
 
 int	closing(int keycode, t_vars *vars, struct s_so_long *so_long)
 {
-	demallocage(so_long, vars);
+	justfree(so_long, vars);
+	// demallocage(so_long, vars);
 }
 
 //Permet d'afficher une texture
