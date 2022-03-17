@@ -46,9 +46,9 @@ void	demallocage(struct s_so_long *so_long, t_vars *vars)
 			free(so_long->txtr[i++]);
 		free(so_long);
 	}
-	// mlx_destroy_window(vars->mlx, vars->win);
-	// mlx_destroy_display(vars->mlx);
-	// mlx_destroy_image(vars->mlx, vars->img.img);
+	mlx_destroy_image(vars->mlx, vars->img.img);
+	mlx_destroy_display(vars->mlx);
+	// mlx_destroy_window(vars->mlx, vars->win);	
 	free(vars->mlx);
 	exit(0);
 }
