@@ -68,8 +68,14 @@ void	map_to_str(char *str, struct s_so_long *so_long)
 int	is_supposed_to_be_in_map(struct s_so_long *so_long)
 {
 	int	i;
+	int	player_num;
+	int	exit_num;
+	int	collec_num;
 
 	i = 0;
+	player_num = 0;
+	exit_num = 0;
+	collec_num = 0;
 	while (so_long->map_but_its_a_string_actually[i])
 	{
 		if (so_long->map_but_its_a_string_actually[i] != '1'
@@ -79,8 +85,16 @@ int	is_supposed_to_be_in_map(struct s_so_long *so_long)
 			&& so_long->map_but_its_a_string_actually[i] != 'E'
 			&& so_long->map_but_its_a_string_actually[i] != '\n')
 			return (0);
+		if (so_long->map_but_its_a_string_actually[i] == 'P')
+			player_num++;
+		if (so_long->map_but_its_a_string_actually[i] == 'E')
+			exit_num++;
+		if (so_long->map_but_its_a_string_actually[i] == 'C')
+			collec_num++;
 		i++;
 	}
+	if (player_num < 1 || player_num > 2 || exit_num < 1 || collec_num < 1)
+		return (0);
 	return (1);
 }
 

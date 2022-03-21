@@ -12,7 +12,8 @@
 
 #include "../includes/so_long.h"
 
-//Singleton, permet d'utiliser une 
+// Singleton, permet d'utiliser une structure avec un comportement de variable
+// globale. Peut être réutilisée dans toute fonction avec s() au lieu de so_long
 
 struct s_so_long	*s(void)
 {
@@ -119,7 +120,7 @@ int	filler(struct s_so_long *so_long, char **argv, t_vars *vars)
 		return (-4);
 	so_long->map_x = map_width(so_long);
 	so_long->map_y = map_height(so_long);
-	if (so_long->map_x < 3 || so_long->map_y < 3)
+	if ((so_long->map_x < 3 && so_long->map_y < 5) || (so_long->map_y < 3 && so_long->map_x < 5))
 		return (0);
 	if (so_long->is_rectangle == 0)
 		return (-1);
@@ -139,13 +140,11 @@ void	display_stuff(t_vars *vars, char *str, int x, int y)
 {
 	int		width;
 	int		height;
-	
 
 	width = 0;
 	height = 0;
-	
 	mlx_destroy_image(vars->mlx, vars->img);
-	vars->img= mlx_xpm_file_to_image(vars->mlx, str, &width, &height);
+	vars->img = mlx_xpm_file_to_image(vars->mlx, str, &width, &height);
 	if (vars->img == NULL)
 	{
 		printf("xmp lecture has failed\n");
@@ -170,7 +169,6 @@ void	display_simplifyer(t_vars *vars, char c, char *str)
 
 void	display_map_sec(t_vars *vars)
 {
-
 	while (s()->x < s()->map_x)
 	{
 		display_simplifyer(vars, WALL, s()->txtr[WALL_TXTR]);
@@ -193,13 +191,15 @@ int	display_map(t_vars *vars)
 	s()->x = 0;
 	s()->y = 0;
 	while (s()->y < s()->map_y)
-	{
-		
+	{	
 		display_map_sec(vars);
 	}
 	if (s()->collect_num <= 0
 		&& s()->map[s()->hero->y / 48][s()->hero->x / 48] == EXIT)
+	{
+		printf("Bien joué, vous avez gagné!!\n");
 		demallocage(s(), vars);
+	}
 	if (s()->map[s()->hero->y / 48][s()->hero->x / 48] == COLLECTIBLE)
 	{
 		s()->map[s()->hero->y / 48][s()->hero->x / 48] = FLOOR;
@@ -231,7 +231,7 @@ int	key_hook_simplifyer(char hero, char c, int i, t_vars *vars)
 			s()->hero->x += 48;
 	}
 	i++;
-	printf("%d\n", i);
+	printf("Vous avez fait %d pas!\n", i);
 	//mlx_string_put(vars->mlx, vars->mlx_win, 10, s()->map_y * 48 + 20, 0x0FFFFFF, ft_itoa(i));
 	return (i);
 }
@@ -254,7 +254,7 @@ int	key_hook(int keycode, t_vars *vars)
 			i = key_hook_simplifyer('x', '-', i, vars);
 	if (keycode == 115)
 		if (s()->hero->y < (s()->map_y * 48) - 96
-			&& s()->map[(s()->hero->y/ 48) + 1][s()->hero->x / 48] != '1')
+			&& s()->map[(s()->hero->y / 48) + 1][s()->hero->x / 48] != '1')
 			i = key_hook_simplifyer('y', '+', i, vars);
 	if (keycode == 100)
 		if (s()->hero->x < (s()->map_x * 48) - 96
@@ -269,12 +269,12 @@ int	key_hook(int keycode, t_vars *vars)
 
 void	exec(struct s_so_long *so_long, t_vars *vars)
 {
-	int	x;
-	int	y;
+	int		x;
+	int		y;
 	int		endian;
 	int		bpp;
 	int		ll;
-	
+
 	endian = 0;
 	bpp = 0;
 	ll = 0;
@@ -307,7 +307,7 @@ void	map_wiring(struct s_so_long *so_long, int i, t_vars *vars)
 	else if (i == -3)
 		printf("Error :\nIncorrect map\n");
 	else if (i == -4)
-		printf("Error :\nIncorrect char found in map\n");
+		printf("Error :\nIncorrect (amount of) char found in map\n");
 	else
 	{
 		printf("%s\n", so_long->map_but_its_a_string_actually);
