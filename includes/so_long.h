@@ -27,27 +27,17 @@
 # include "get_next_line.h"
 # include <mlx.h>
 
-typedef struct	s_data {
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}				t_data;
-
 typedef struct	s_vars {
 	void	*mlx;
-	void	*win;
 	void	*mlx_win;
-	t_data	img;
+	void	*img;
+	void	*addr;
 }				t_vars;
 
 typedef struct s_hero
 {
 	int		x;
 	int		y;
-	int		angle;
-	char	*hero;
 }				t_hero;
 
 enum
@@ -69,7 +59,7 @@ struct s_so_long
 	char	*map_but_its_a_string_actually;
 	char	**map;
 	int		is_rectangle;
-	t_hero	hero;
+	t_hero	*hero;
 	char	*txtr[NBR_TXTR];
 	int		x;
 	int		y;
@@ -92,6 +82,7 @@ int		is_supposed_to_be_in_map(struct s_so_long *so_long);
 int		filler(struct s_so_long *so_long, char **argv, t_vars *vars);
 int		closing(int keycode, t_vars *vars, struct s_so_long *so_long);
 
+char	*ft_itoa(int n);
 char	*ft_strdup(char *src);
 
 void	free_array(char **twoD);
@@ -104,7 +95,7 @@ void	exec(struct s_so_long *so_long, t_vars *vars);
 void	map_to_str(char *str, struct s_so_long *so_long);
 void	display_simplifyer(t_vars *vars, char c, char *str);
 void	display_stuff(t_vars *vars, char *str, int x, int y);
-void	demallocage(struct s_so_long *so_long, t_vars *vars);
+int	demallocage(struct s_so_long *so_long, t_vars *vars);
 void	map_wiring(struct s_so_long *so_long, int i, t_vars *vars);
 void	filler_sec(struct s_so_long *so_long, char **argv, t_vars *vars);
 

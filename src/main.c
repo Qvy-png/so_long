@@ -29,7 +29,7 @@ struct s_so_long	*s(void)
 
 // Permet de clean à la fin du programme
 
-void	demallocage(struct s_so_long *so_long, t_vars *vars)
+int	demallocage(struct s_so_long *so_long, t_vars *vars)
 {
 	int	i;
 
@@ -44,41 +44,23 @@ void	demallocage(struct s_so_long *so_long, t_vars *vars)
 			close(so_long->file_fd);
 		while (i != NBR_TXTR)
 			free(so_long->txtr[i++]);
+		if (so_long->hero)
+			free(so_long->hero);
 		free(so_long);
 	}
-	mlx_destroy_image(vars->mlx, vars->img.img);
-	mlx_destroy_display(vars->mlx);
-	// mlx_destroy_window(vars->mlx, vars->win);	
-	free(vars->mlx);
+	if (vars && vars->img && vars->mlx)
+		mlx_destroy_image(vars->mlx, vars->img);
+	if (vars && vars->mlx_win && vars->mlx)
+		mlx_destroy_window(vars->mlx, vars->mlx_win);
+	//free(vars->img);
+	if (vars && vars->mlx)
+		mlx_destroy_display(vars->mlx);
+	if (vars && vars->mlx)
+		free(vars->mlx);
+	if (vars)
+		free(vars);
 	exit(0);
 }
-
-/////////VERY UNSURE
-
-void	justfree(struct s_so_long *so_long, t_vars *vars)
-{
-	int	i;
-
-	i = 0;
-	if (so_long)
-	{
-		if (so_long->map_but_its_a_string_actually)
-			free(so_long->map_but_its_a_string_actually);
-		if (so_long->map)
-			free_array(so_long->map);
-		if (so_long->file_fd)
-			close(so_long->file_fd);
-		while (i != NBR_TXTR)
-			free(so_long->txtr[i++]);
-		free(so_long);
-	}
-	// mlx_destroy_image(vars->mlx, vars->img.img);
-	// mlx_destroy_display(vars->mlx);
-	// mlx_destroy_window(vars->mlx, vars->win);	
-	 free(vars->mlx);
-	exit(0);
-}
-
 
 // Permet d'initialiser les variables de la structure
 
@@ -103,6 +85,10 @@ void	init_so_long(struct s_so_long *so_long, t_vars *vars)
 	so_long->ex = 0;
 	so_long->her = 0;
 	so_long->col = 0;
+	vars->mlx = NULL;
+	vars->addr = NULL;
+	vars->img = NULL;
+	vars->mlx_win = NULL;
 }
 
 // Permet de faire toute la récupération d'informations dans le fichier
@@ -147,32 +133,26 @@ int	filler(struct s_so_long *so_long, char **argv, t_vars *vars)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-//Permet de fermer le programme et de le quitter proprement
-
-int	closing(int keycode, t_vars *vars, struct s_so_long *so_long)
-{
-	justfree(so_long, vars);
-	// demallocage(so_long, vars);
-}
-
 //Permet d'afficher une texture
 
 void	display_stuff(t_vars *vars, char *str, int x, int y)
 {
 	int		width;
 	int		height;
+	
 
 	width = 0;
 	height = 0;
-	mlx_destroy_image(vars->mlx, vars->img.img);
-	vars->img.img = mlx_xpm_file_to_image(vars->mlx, str, &width, &height);
-	if (vars->img.img == NULL)
+	
+	mlx_destroy_image(vars->mlx, vars->img);
+	vars->img= mlx_xpm_file_to_image(vars->mlx, str, &width, &height);
+	if (vars->img == NULL)
 	{
 		printf("xmp lecture has failed\n");
 		demallocage(s(), vars);
 		exit(0);
 	}
-	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->img.img,
+	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->img,
 		x * 48, y * 48);
 }
 
@@ -190,14 +170,15 @@ void	display_simplifyer(t_vars *vars, char c, char *str)
 
 void	display_map_sec(t_vars *vars)
 {
+
 	while (s()->x < s()->map_x)
 	{
 		display_simplifyer(vars, WALL, s()->txtr[WALL_TXTR]);
 		display_simplifyer(vars, FLOOR, s()->txtr[FLOOR_TXTR]);
 		display_simplifyer(vars, COLLECTIBLE, s()->txtr[COLLECTIBLE_TXTR]);
 		display_simplifyer(vars, EXIT, s()->txtr[EXIT_TXTR]);
-		display_stuff(vars, s()->txtr[HERO_TXTR], (s()->hero.x / 48),
-			(s()->hero.y / 48));
+		display_stuff(vars, s()->txtr[HERO_TXTR], (s()->hero->x / 48),
+			(s()->hero->y / 48));
 		s()->x++;
 	}
 	s()->x = 0;
@@ -213,14 +194,15 @@ int	display_map(t_vars *vars)
 	s()->y = 0;
 	while (s()->y < s()->map_y)
 	{
+		
 		display_map_sec(vars);
 	}
 	if (s()->collect_num <= 0
-		&& s()->map[s()->hero.y / 48][s()->hero.x / 48] == EXIT)
+		&& s()->map[s()->hero->y / 48][s()->hero->x / 48] == EXIT)
 		demallocage(s(), vars);
-	if (s()->map[s()->hero.y / 48][s()->hero.x / 48] == COLLECTIBLE)
+	if (s()->map[s()->hero->y / 48][s()->hero->x / 48] == COLLECTIBLE)
 	{
-		s()->map[s()->hero.y / 48][s()->hero.x / 48] = FLOOR;
+		s()->map[s()->hero->y / 48][s()->hero->x / 48] = FLOOR;
 		s()->collect_num = s()->collect_num - 1;
 	}
 	return (0);
@@ -230,26 +212,27 @@ int	display_map(t_vars *vars)
 //un mur
 //renvoie un int
 
-int	key_hook_simplifyer(char hero, char c, int i)
+int	key_hook_simplifyer(char hero, char c, int i, t_vars *vars)
 {
 	if (c == '-')
 	{
 		if (hero == 'y')
 		{
-			s()->hero.y -= 48;
+			s()->hero->y -= 48;
 		}
 		if (hero == 'x')
-			s()->hero.x -= 48;
+			s()->hero->x -= 48;
 	}
 	if (c == '+')
 	{
 		if (hero == 'y')
-			s()->hero.y += 48;
+			s()->hero->y += 48;
 		if (hero == 'x')
-			s()->hero.x += 48;
+			s()->hero->x += 48;
 	}
 	i++;
 	printf("%d\n", i);
+	//mlx_string_put(vars->mlx, vars->mlx_win, 10, s()->map_y * 48 + 20, 0x0FFFFFF, ft_itoa(i));
 	return (i);
 }
 
@@ -259,23 +242,24 @@ int	key_hook_simplifyer(char hero, char c, int i)
 int	key_hook(int keycode, t_vars *vars)
 {
 	static int	i;
+	char		*str;
 
 	if (keycode == 119)
-		if (s()->hero.y > 48
-			&& s()->map[(s()->hero.y / 48) - 1][s()->hero.x / 48] != '1')
-			i = key_hook_simplifyer('y', '-', i);
+		if (s()->hero->y > 48
+			&& s()->map[(s()->hero->y / 48) - 1][s()->hero->x / 48] != '1')
+			i = key_hook_simplifyer('y', '-', i, vars);
 	if (keycode == 97)
-		if (s()->hero.x > 48
-			&& s()->map[(s()->hero.y / 48)][s()->hero.x / 48 - 1] != '1')
-			i = key_hook_simplifyer('x', '-', i);
+		if (s()->hero->x > 48
+			&& s()->map[(s()->hero->y / 48)][s()->hero->x / 48 - 1] != '1')
+			i = key_hook_simplifyer('x', '-', i, vars);
 	if (keycode == 115)
-		if (s()->hero.y < (s()->map_y * 48) - 96
-			&& s()->map[(s()->hero.y / 48) + 1][s()->hero.x / 48] != '1')
-			i = key_hook_simplifyer('y', '+', i);
+		if (s()->hero->y < (s()->map_y * 48) - 96
+			&& s()->map[(s()->hero->y/ 48) + 1][s()->hero->x / 48] != '1')
+			i = key_hook_simplifyer('y', '+', i, vars);
 	if (keycode == 100)
-		if (s()->hero.x < (s()->map_x * 48) - 96
-			&& s()->map[(s()->hero.y / 48)][s()->hero.x / 48 + 1] != '1')
-			i = key_hook_simplifyer('x', '+', i);
+		if (s()->hero->x < (s()->map_x * 48) - 96
+			&& s()->map[(s()->hero->y / 48)][s()->hero->x / 48 + 1] != '1')
+			i = key_hook_simplifyer('x', '+', i, vars);
 	if (keycode == 65307)
 		demallocage(s(), vars);
 	return (0);
@@ -287,24 +271,23 @@ void	exec(struct s_so_long *so_long, t_vars *vars)
 {
 	int	x;
 	int	y;
-
+	int		endian;
+	int		bpp;
+	int		ll;
+	
+	endian = 0;
+	bpp = 0;
+	ll = 0;
 	vars->mlx = mlx_init();
 	vars->mlx_win = mlx_new_window(vars->mlx, so_long->map_x * 48,
-			so_long->map_y * 48, "so_long");
-	vars->img.img = mlx_new_image(vars->mlx, so_long->map_x * 48,
-			so_long->map_y * 48);
-	vars->img.addr = mlx_get_data_addr(vars->img.img, &vars->img.bits_per_pixel,
-			&vars->img.line_length, &vars->img.endian);
+			so_long->map_y * 48 + 30, "so_long");
+	vars->img = mlx_new_image(vars->mlx, so_long->map_x * 48,
+			so_long->map_y * 48 + 30);
+	vars->addr = mlx_get_data_addr(vars->img, &bpp,
+			&ll, &endian);
 	mlx_key_hook(vars->mlx_win, key_hook, &vars);
-	mlx_hook(vars->mlx_win, 17, 0, closing, &vars);
+	mlx_hook(vars->mlx_win, 17, 0, demallocage, &vars);
 	mlx_loop_hook(vars->mlx, display_map, vars);
-	if (s()->map[s()->hero.x / 48][s()->hero.y / 48] == COLLECTIBLE)
-	{
-		display_simplifyer(vars, WALL, s()->txtr[WALL_TXTR]);
-		s()->map[s()->hero.x / 48][s()->hero.y / 48] = FLOOR;
-		printf("a");
-		s()->collect_num = s()->collect_num - 1;
-	}
 	mlx_loop(vars->mlx);
 }
 
@@ -349,6 +332,9 @@ int	main(int argc, char **argv)
 				return (0);
 			vars = malloc(sizeof(t_vars));
 			if (!vars)
+				return (0);
+			so_long->hero = malloc(sizeof(t_hero));
+			if (!so_long->hero)
 				return (0);
 			i = filler(so_long, argv, vars);
 			map_wiring(so_long, i, vars);

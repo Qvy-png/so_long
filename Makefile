@@ -19,6 +19,7 @@ SRC =	src/main.c\
 		src/map_scan.c\
 		src/map_scan_utils.c\
 		src/so_long_utils1.c\
+		src/ft_itoa.c\
 		gnl/get_next_line.c\
 		gnl/get_next_line_utils.c\
 

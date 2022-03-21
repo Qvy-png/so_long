@@ -69,8 +69,8 @@ void	record_hero(struct s_so_long *so_long)
 			if (so_long->map[y][x] == 'P')
 			{
 				so_long->map[y][x] = '0';
-				so_long->hero.y = y * 48;
-				so_long->hero.x = x * 48;
+				so_long->hero->y = y * 48;
+				so_long->hero->x = x * 48;
 			}
 			x++;
 		}
