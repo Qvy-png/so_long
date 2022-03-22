@@ -119,6 +119,7 @@ void	init_so_long(struct s_so_long *so_long, t_vars *vars)
 	so_long->ex = 0;
 	so_long->her = 0;
 	so_long->col = 0;
+	so_long->steps = 0;
 	vars->mlx = NULL;
 	vars->addr = NULL;
 	vars->img = NULL;
@@ -222,12 +223,17 @@ void	display_map_sec(t_vars *vars)
 
 int	display_map(t_vars *vars)
 {
+	char *str;
+
+	str = ft_itoa(s()->steps);
 	s()->x = 0;
 	s()->y = 0;
 	while (s()->y < s()->map_y)
 	{	
+		mlx_string_put(vars->mlx, vars->mlx_win, 20, 20, 0x0ffffff, str);
 		display_map_sec(vars);
 	}
+	
 	if (s()->collect_num <= 0
 		&& s()->map[s()->hero->y / 48][s()->hero->x / 48] == EXIT)
 	{
@@ -274,25 +280,22 @@ int	key_hook_simplifyer(char hero, char c, int i, t_vars *vars)
 
 int	key_hook(int keycode, t_vars *vars)
 {
-	static int	i;
-	char		*str;
-
 	if (keycode == 119)
 		if (s()->hero->y > 48
 			&& s()->map[(s()->hero->y / 48) - 1][s()->hero->x / 48] != '1')
-			i = key_hook_simplifyer('y', '-', i, vars);
+			s()->steps = key_hook_simplifyer('y', '-', s()->steps, vars);
 	if (keycode == 97)
 		if (s()->hero->x > 48
 			&& s()->map[(s()->hero->y / 48)][s()->hero->x / 48 - 1] != '1')
-			i = key_hook_simplifyer('x', '-', i, vars);
+			s()->steps = key_hook_simplifyer('x', '-', s()->steps, vars);
 	if (keycode == 115)
 		if (s()->hero->y < (s()->map_y * 48) - 96
 			&& s()->map[(s()->hero->y / 48) + 1][s()->hero->x / 48] != '1')
-			i = key_hook_simplifyer('y', '+', i, vars);
+			s()->steps = key_hook_simplifyer('y', '+', s()->steps, vars);
 	if (keycode == 100)
 		if (s()->hero->x < (s()->map_x * 48) - 96
 			&& s()->map[(s()->hero->y / 48)][s()->hero->x / 48 + 1] != '1')
-			i = key_hook_simplifyer('x', '+', i, vars);
+			s()->steps = key_hook_simplifyer('x', '+', s()->steps, vars);
 	if (keycode == 65307)
 		panic_free(s(), vars);
 	return (0);
@@ -313,9 +316,9 @@ void	exec(struct s_so_long *so_long, t_vars *vars)
 	ll = 0;
 	vars->mlx = mlx_init();
 	vars->mlx_win = mlx_new_window(vars->mlx, so_long->map_x * 48,
-			so_long->map_y * 48 + 30, "so_long");
+			so_long->map_y * 48, "so_long");
 	vars->img = mlx_new_image(vars->mlx, so_long->map_x * 48,
-			so_long->map_y * 48 + 30);
+			so_long->map_y * 48);
 	vars->addr = mlx_get_data_addr(vars->img, &bpp,
 			&ll, &endian);
 	mlx_key_hook(vars->mlx_win, key_hook, &vars);

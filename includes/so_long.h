@@ -67,6 +67,7 @@ struct s_so_long
 	int		col;
 	int		ex;
 	int		her;
+	int		steps;
 };
 
 int		last_char(char *str);
