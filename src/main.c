@@ -233,7 +233,7 @@ int	display_map(t_vars *vars)
 		mlx_string_put(vars->mlx, vars->mlx_win, 20, 20, 0x0ffffff, str);
 		display_map_sec(vars);
 	}
-	
+	free(str);
 	if (s()->collect_num <= 0
 		&& s()->map[s()->hero->y / 48][s()->hero->x / 48] == EXIT)
 	{
