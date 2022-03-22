@@ -64,48 +64,6 @@ int	demallocage(t_vars *vars)
 	exit(0);
 }
 
-int jsp(t_vars *vars)
-{
-	demallocage(vars);
-	return (0);
-}
-
-// int	panic_free(t_vars *vars)
-// {
-// 	// WHAT THE FUCK 
-// 	int	i;
-
-// 	i = 0;
-// 	if (s())
-// 	{
-// 		if (s()->map_string)
-// 			free(s()->map_string);
-// 		if (s()->map)
-// 			free_array(s()->map);
-// 		if (s()->file_fd)
-// 			close(s()->file_fd);
-// 		while (i != NBR_TXTR)
-// 			free(s()->txtr[i++]);
-// 		if (s()->hero)
-// 			free(s()->hero);
-// 		free(s());
-// 	}
-// 	if (vars)
-// 	{
-// 		// if (vars->img && vars->mlx)
-// 		// 	mlx_destroy_image(vars->mlx, vars->img);
-// 		// if (vars->mlx_win && vars->mlx)
-// 		// 	mlx_destroy_window(vars->mlx, vars->mlx_win);
-// 		// if (vars->mlx)
-// 		// 	mlx_destroy_display(vars->mlx);
-// 		// if (vars->mlx)
-// 		// 	free(vars->mlx);
-// 		free(vars);
-// 	}
-// 	exit(0);
-// }
-// Permet d'initialiser les variables de la structure
-
 void	init_so_long(struct s_so_long *so_long, t_vars *vars)
 {
 	so_long->file_name = NULL;
@@ -310,7 +268,7 @@ int	key_hook(int keycode, t_vars *vars)
 			&& s()->map[(s()->hero->y / 48)][s()->hero->x / 48 + 1] != '1')
 			s()->steps = key_hook_simplifyer('x', pos, s()->steps, vars);
 	if (keycode == 65307)
-		jsp(vars);
+		demallocage(vars);
 	return (0);
 }
 
@@ -335,7 +293,7 @@ void	exec(struct s_so_long *so_long, t_vars *vars)
 	vars->addr = mlx_get_data_addr(vars->img, &bpp,
 			&ll, &endian);
 	mlx_key_hook(vars->mlx_win, key_hook, vars);
-	mlx_hook(vars->mlx_win, 17, 0, jsp, vars);
+	mlx_hook(vars->mlx_win, 17, 0, demallocage, vars);
 	mlx_loop_hook(vars->mlx, display_map, vars);
 	mlx_loop(vars->mlx);
 }
