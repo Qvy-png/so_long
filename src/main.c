@@ -30,72 +30,80 @@ struct s_so_long	*s(void)
 
 // Permet de clean à la fin du programme
 
-void	demallocage(struct s_so_long *so_long, t_vars *vars)
+int	demallocage(t_vars *vars)
 {
 	int	i;
 
 	i = 0;
-	if (so_long)
+	if (s())
 	{
-		if (so_long->map_string)
-			free(so_long->map_string);
-		if (so_long->map)
-			free_array(so_long->map);
-		if (so_long->file_fd)
-			close(so_long->file_fd);
+		if (s()->map_string)
+			free(s()->map_string);
+		if (s()->map)
+			free_array(s()->map);
+		if (s()->file_fd)
+			close(s()->file_fd);
 		while (i != NBR_TXTR)
-			free(so_long->txtr[i++]);
-		if (so_long->hero)
-			free(so_long->hero);
-		free(so_long);
+			free(s()->txtr[i++]);
+		if (s()->hero)
+			free(s()->hero);
+		free(s());
 	}
-	if (vars && vars->img && vars->mlx)
-		mlx_destroy_image(vars->mlx, vars->img);
-	if (vars && vars->mlx_win && vars->mlx)
-		mlx_destroy_window(vars->mlx, vars->mlx_win);
-	if (vars && vars->mlx)
-		mlx_destroy_display(vars->mlx);
-	if (vars && vars->mlx)
-		free(vars->mlx);
 	if (vars)
+	{
+		if (vars->img && vars->mlx)
+			mlx_destroy_image(vars->mlx, vars->img);
+		if (vars->mlx_win && vars->mlx)
+			mlx_destroy_window(vars->mlx, vars->mlx_win);
+		if (vars->mlx)
+			mlx_destroy_display(vars->mlx);
+		if (vars->mlx)
+			free(vars->mlx);
 		free(vars);
+	}
 	exit(0);
 }
 
-int	panic_free(struct s_so_long *so_long, t_vars *vars)
+int jsp(t_vars *vars)
 {
-	// WHAT THE FUCK 
-	// int	i;
-	//
-	// i = 0;
-	//
-	//
-	// if (so_long)
-	// {
-	// 	if (so_long->map_string)
-	// 		free(so_long->map_string);
-	// 	if (so_long->map)
-	// 		free_array(so_long->map);
-	// 	if (so_long->file_fd)
-	// 		close(so_long->file_fd);
-	// 	while (i != NBR_TXTR)
-	// 		free(so_long->txtr[i++]);
-	// 	if (so_long->hero)
-	// 		free(so_long->hero);
-	// 	free(so_long);
-	// }
-	// // if (vars && vars->img && vars->mlx)
-	// 	mlx_destroy_image(vars->mlx, vars->img);
-	// if (vars && vars->mlx_win && vars->mlx)
-	// 	mlx_destroy_window(vars->mlx, vars->mlx_win);
-	// if (vars && vars->mlx)
-	// 	mlx_destroy_display(vars->mlx);
-	// if (vars && vars->mlx)
-	// 	free(vars->mlx);
-	// if (vars)
-	// 	free(vars);
-	exit(0);
+	demallocage(vars);
+	return (0);
 }
+
+// int	panic_free(t_vars *vars)
+// {
+// 	// WHAT THE FUCK 
+// 	int	i;
+
+// 	i = 0;
+// 	if (s())
+// 	{
+// 		if (s()->map_string)
+// 			free(s()->map_string);
+// 		if (s()->map)
+// 			free_array(s()->map);
+// 		if (s()->file_fd)
+// 			close(s()->file_fd);
+// 		while (i != NBR_TXTR)
+// 			free(s()->txtr[i++]);
+// 		if (s()->hero)
+// 			free(s()->hero);
+// 		free(s());
+// 	}
+// 	if (vars)
+// 	{
+// 		// if (vars->img && vars->mlx)
+// 		// 	mlx_destroy_image(vars->mlx, vars->img);
+// 		// if (vars->mlx_win && vars->mlx)
+// 		// 	mlx_destroy_window(vars->mlx, vars->mlx_win);
+// 		// if (vars->mlx)
+// 		// 	mlx_destroy_display(vars->mlx);
+// 		// if (vars->mlx)
+// 		// 	free(vars->mlx);
+// 		free(vars);
+// 	}
+// 	exit(0);
+// }
 // Permet d'initialiser les variables de la structure
 
 void	init_so_long(struct s_so_long *so_long, t_vars *vars)
@@ -178,12 +186,13 @@ void	display_stuff(t_vars *vars, char *str, int x, int y)
 
 	width = 0;
 	height = 0;
-	mlx_destroy_image(vars->mlx, vars->img);
+	if (vars->img)
+		mlx_destroy_image(vars->mlx, vars->img);
 	vars->img = mlx_xpm_file_to_image(vars->mlx, str, &width, &height);
 	if (vars->img == NULL)
 	{
 		printf("xmp lecture has failed\n");
-		demallocage(s(), vars);
+		demallocage(vars);
 		exit(0);
 	}
 	mlx_put_image_to_window(vars->mlx, vars->mlx_win, vars->img,
@@ -195,9 +204,7 @@ void	display_stuff(t_vars *vars, char *str, int x, int y)
 void	display_simplifyer(t_vars *vars, char c, char *str)
 {
 	if (s()->map[s()->y][s()->x] == c)
-	{
 		display_stuff(vars, str, s()->x, s()->y);
-	}
 }
 
 //Fonction secondaire de display_map
@@ -238,7 +245,7 @@ int	display_map(t_vars *vars)
 		&& s()->map[s()->hero->y / 48][s()->hero->x / 48] == EXIT)
 	{
 		printf("Bien joué, vous avez gagné!!\n");
-		demallocage(s(), vars);
+		demallocage(vars);
 	}
 	if (s()->map[s()->hero->y / 48][s()->hero->x / 48] == COLLECTIBLE)
 	{
@@ -280,24 +287,30 @@ int	key_hook_simplifyer(char hero, char c, int i, t_vars *vars)
 
 int	key_hook(int keycode, t_vars *vars)
 {
+	char min;
+	char pos;
+
+	min = '-';
+	pos = '+';
+
 	if (keycode == 119)
 		if (s()->hero->y > 48
 			&& s()->map[(s()->hero->y / 48) - 1][s()->hero->x / 48] != '1')
-			s()->steps = key_hook_simplifyer('y', '-', s()->steps, vars);
+			s()->steps = key_hook_simplifyer('y', min, s()->steps, vars);
 	if (keycode == 97)
 		if (s()->hero->x > 48
 			&& s()->map[(s()->hero->y / 48)][s()->hero->x / 48 - 1] != '1')
-			s()->steps = key_hook_simplifyer('x', '-', s()->steps, vars);
+			s()->steps = key_hook_simplifyer('x', min, s()->steps, vars);
 	if (keycode == 115)
 		if (s()->hero->y < (s()->map_y * 48) - 96
 			&& s()->map[(s()->hero->y / 48) + 1][s()->hero->x / 48] != '1')
-			s()->steps = key_hook_simplifyer('y', '+', s()->steps, vars);
+			s()->steps = key_hook_simplifyer('y', pos, s()->steps, vars);
 	if (keycode == 100)
 		if (s()->hero->x < (s()->map_x * 48) - 96
 			&& s()->map[(s()->hero->y / 48)][s()->hero->x / 48 + 1] != '1')
-			s()->steps = key_hook_simplifyer('x', '+', s()->steps, vars);
+			s()->steps = key_hook_simplifyer('x', pos, s()->steps, vars);
 	if (keycode == 65307)
-		panic_free(s(), vars);
+		jsp(vars);
 	return (0);
 }
 
@@ -321,8 +334,8 @@ void	exec(struct s_so_long *so_long, t_vars *vars)
 			so_long->map_y * 48);
 	vars->addr = mlx_get_data_addr(vars->img, &bpp,
 			&ll, &endian);
-	mlx_key_hook(vars->mlx_win, key_hook, &vars);
-	mlx_hook(vars->mlx_win, 17, 0, panic_free, &vars);
+	mlx_key_hook(vars->mlx_win, key_hook, vars);
+	mlx_hook(vars->mlx_win, 17, 0, jsp, vars);
 	mlx_loop_hook(vars->mlx, display_map, vars);
 	mlx_loop(vars->mlx);
 }
@@ -374,7 +387,7 @@ int	main(int argc, char **argv)
 				return (0);
 			i = filler(so_long, argv, vars);
 			map_wiring(so_long, i, vars);
-			demallocage(so_long, vars);
+			demallocage(vars);
 		}
 		else
 			printf("Error :\nWrong file type!\n");
