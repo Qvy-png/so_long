@@ -20,9 +20,9 @@ int	map_width(struct s_so_long *so_long)
 	int	i;
 
 	i = 0;
-	while (so_long->map_but_its_a_string_actually[i])
+	while (so_long->map_string[i])
 	{
-		if (so_long->map_but_its_a_string_actually[i] == '\n')
+		if (so_long->map_string[i] == '\n')
 			return (i);
 		i++;
 	}

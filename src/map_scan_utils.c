@@ -57,7 +57,7 @@ void	map_to_str(char *str, struct s_so_long *so_long)
 		close(status);
 	}
 	file[ret] = 0;
-	so_long->map_but_its_a_string_actually = ft_strdup(file);
+	so_long->map_string = ft_strdup(file);
 	free(file);
 }
 
@@ -72,26 +72,22 @@ int	is_supposed_to_be_in_map(struct s_so_long *so_long)
 	int	exit_num;
 	int	collec_num;
 
-	i = 0;
+	i = -1;
 	player_num = 0;
 	exit_num = 0;
 	collec_num = 0;
-	while (so_long->map_but_its_a_string_actually[i])
+	while (so_long->map_string[++i])
 	{
-		if (so_long->map_but_its_a_string_actually[i] != '1'
-			&& so_long->map_but_its_a_string_actually[i] != '0'
-			&& so_long->map_but_its_a_string_actually[i] != 'C'
-			&& so_long->map_but_its_a_string_actually[i] != 'P'
-			&& so_long->map_but_its_a_string_actually[i] != 'E'
-			&& so_long->map_but_its_a_string_actually[i] != '\n')
+		if (so_long->map_string[i] != '1' && so_long->map_string[i] != '0'
+			&& so_long->map_string[i] != 'C' && so_long->map_string[i] != 'P'
+			&& so_long->map_string[i] != 'E' && so_long->map_string[i] != '\n')
 			return (0);
-		if (so_long->map_but_its_a_string_actually[i] == 'P')
+		if (so_long->map_string[i] == 'P')
 			player_num++;
-		if (so_long->map_but_its_a_string_actually[i] == 'E')
+		if (so_long->map_string[i] == 'E')
 			exit_num++;
-		if (so_long->map_but_its_a_string_actually[i] == 'C')
+		if (so_long->map_string[i] == 'C')
 			collec_num++;
-		i++;
 	}
 	if (player_num < 1 || player_num > 2 || exit_num < 1 || collec_num < 1)
 		return (0);

@@ -27,7 +27,7 @@
 # include "get_next_line.h"
 # include <mlx.h>
 
-typedef struct	s_vars {
+typedef struct s_vars {
 	void	*mlx;
 	void	*mlx_win;
 	void	*img;
@@ -56,7 +56,7 @@ struct s_so_long
 	int		map_size;
 	int		map_x;
 	int		map_y;
-	char	*map_but_its_a_string_actually;
+	char	*map_string;
 	char	**map;
 	int		is_rectangle;
 	t_hero	*hero;
@@ -70,7 +70,7 @@ struct s_so_long
 };
 
 int		last_char(char *str);
-int 	first_char(char *str);
+int		first_char(char *str);
 int		cnt_collect(char *str);
 int		display_map(t_vars *vars);
 int		key_hook(int keycode, t_vars *vars);
@@ -78,6 +78,7 @@ int		map_width(struct s_so_long *so_long);
 int		map_height(struct s_so_long *so_long);
 int		map_filler(struct s_so_long *so_long);
 int		is_dot_ber(char *name, char *extention);
+int		panic_free(struct s_so_long *so_long, t_vars *vars);
 int		is_supposed_to_be_in_map(struct s_so_long *so_long);
 int		filler(struct s_so_long *so_long, char **argv, t_vars *vars);
 int		closing(int keycode, t_vars *vars, struct s_so_long *so_long);
@@ -95,7 +96,7 @@ void	exec(struct s_so_long *so_long, t_vars *vars);
 void	map_to_str(char *str, struct s_so_long *so_long);
 void	display_simplifyer(t_vars *vars, char c, char *str);
 void	display_stuff(t_vars *vars, char *str, int x, int y);
-int	demallocage(struct s_so_long *so_long, t_vars *vars);
+void	demallocage(struct s_so_long *so_long, t_vars *vars);
 void	map_wiring(struct s_so_long *so_long, int i, t_vars *vars);
 void	filler_sec(struct s_so_long *so_long, char **argv, t_vars *vars);
 

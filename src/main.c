@@ -30,15 +30,15 @@ struct s_so_long	*s(void)
 
 // Permet de clean à la fin du programme
 
-int	demallocage(struct s_so_long *so_long, t_vars *vars)
+void	demallocage(struct s_so_long *so_long, t_vars *vars)
 {
 	int	i;
 
 	i = 0;
 	if (so_long)
 	{
-		if (so_long->map_but_its_a_string_actually)
-			free(so_long->map_but_its_a_string_actually);
+		if (so_long->map_string)
+			free(so_long->map_string);
 		if (so_long->map)
 			free_array(so_long->map);
 		if (so_long->file_fd)
@@ -53,7 +53,6 @@ int	demallocage(struct s_so_long *so_long, t_vars *vars)
 		mlx_destroy_image(vars->mlx, vars->img);
 	if (vars && vars->mlx_win && vars->mlx)
 		mlx_destroy_window(vars->mlx, vars->mlx_win);
-	//free(vars->img);
 	if (vars && vars->mlx)
 		mlx_destroy_display(vars->mlx);
 	if (vars && vars->mlx)
@@ -63,6 +62,40 @@ int	demallocage(struct s_so_long *so_long, t_vars *vars)
 	exit(0);
 }
 
+int	panic_free(struct s_so_long *so_long, t_vars *vars)
+{
+	// WHAT THE FUCK 
+	// int	i;
+	//
+	// i = 0;
+	//
+	//
+	// if (so_long)
+	// {
+	// 	if (so_long->map_string)
+	// 		free(so_long->map_string);
+	// 	if (so_long->map)
+	// 		free_array(so_long->map);
+	// 	if (so_long->file_fd)
+	// 		close(so_long->file_fd);
+	// 	while (i != NBR_TXTR)
+	// 		free(so_long->txtr[i++]);
+	// 	if (so_long->hero)
+	// 		free(so_long->hero);
+	// 	free(so_long);
+	// }
+	// if (vars && vars->img && vars->mlx)
+	// 	mlx_destroy_image(vars->mlx, vars->img);
+	// if (vars && vars->mlx_win && vars->mlx)
+	// 	mlx_destroy_window(vars->mlx, vars->mlx_win);
+	// if (vars && vars->mlx)
+	// 	mlx_destroy_display(vars->mlx);
+	// if (vars && vars->mlx)
+	// 	free(vars->mlx);
+	// if (vars)
+	// 	free(vars);
+	exit(0);
+}
 // Permet d'initialiser les variables de la structure
 
 void	init_so_long(struct s_so_long *so_long, t_vars *vars)
@@ -72,7 +105,7 @@ void	init_so_long(struct s_so_long *so_long, t_vars *vars)
 	so_long->map_size = 0;
 	so_long->map_x = 0;
 	so_long->map_y = 0;
-	so_long->map_but_its_a_string_actually = NULL;
+	so_long->map_string = NULL;
 	so_long->map = NULL;
 	so_long->is_rectangle = 0;
 	so_long->x = 0;
@@ -97,7 +130,7 @@ void	init_so_long(struct s_so_long *so_long, t_vars *vars)
 
 void	filler_sec(struct s_so_long *so_long, char **argv, t_vars *vars)
 {
-	so_long->collect_num = cnt_collect(so_long->map_but_its_a_string_actually);
+	so_long->collect_num = cnt_collect(so_long->map_string);
 	close(so_long->file_fd);
 	so_long->file_fd = open(so_long->file_name, O_RDONLY);
 	map_alloc(so_long);
@@ -113,14 +146,15 @@ int	filler(struct s_so_long *so_long, char **argv, t_vars *vars)
 		return (-2);
 	map_size(so_long);
 	map_to_str(so_long->file_name, so_long);
-	if (last_char(so_long->map_but_its_a_string_actually) == 0
-		|| first_char(so_long->map_but_its_a_string_actually) == 0)
+	if (last_char(so_long->map_string) == 0
+		|| first_char(so_long->map_string) == 0)
 		return (-3);
 	if (is_supposed_to_be_in_map(so_long) == 0)
 		return (-4);
 	so_long->map_x = map_width(so_long);
 	so_long->map_y = map_height(so_long);
-	if ((so_long->map_x < 3 && so_long->map_y < 5) || (so_long->map_y < 3 && so_long->map_x < 5))
+	if ((so_long->map_x < 3 && so_long->map_y < 5)
+		|| (so_long->map_y < 3 && so_long->map_x < 5))
 		return (0);
 	if (so_long->is_rectangle == 0)
 		return (-1);
@@ -232,7 +266,6 @@ int	key_hook_simplifyer(char hero, char c, int i, t_vars *vars)
 	}
 	i++;
 	printf("Vous avez fait %d pas!\n", i);
-	//mlx_string_put(vars->mlx, vars->mlx_win, 10, s()->map_y * 48 + 20, 0x0FFFFFF, ft_itoa(i));
 	return (i);
 }
 
@@ -261,7 +294,7 @@ int	key_hook(int keycode, t_vars *vars)
 			&& s()->map[(s()->hero->y / 48)][s()->hero->x / 48 + 1] != '1')
 			i = key_hook_simplifyer('x', '+', i, vars);
 	if (keycode == 65307)
-		demallocage(s(), vars);
+		panic_free(s(), vars);
 	return (0);
 }
 
@@ -286,7 +319,7 @@ void	exec(struct s_so_long *so_long, t_vars *vars)
 	vars->addr = mlx_get_data_addr(vars->img, &bpp,
 			&ll, &endian);
 	mlx_key_hook(vars->mlx_win, key_hook, &vars);
-	mlx_hook(vars->mlx_win, 17, 0, demallocage, &vars);
+	mlx_hook(vars->mlx_win, 17, 0, panic_free, &vars);
 	mlx_loop_hook(vars->mlx, display_map, vars);
 	mlx_loop(vars->mlx);
 }
@@ -310,7 +343,7 @@ void	map_wiring(struct s_so_long *so_long, int i, t_vars *vars)
 		printf("Error :\nIncorrect (amount of) char found in map\n");
 	else
 	{
-		printf("%s\n", so_long->map_but_its_a_string_actually);
+		printf("%s\n", so_long->map_string);
 		exec(so_long, vars);
 	}
 }
