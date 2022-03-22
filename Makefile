@@ -20,6 +20,9 @@ SRC =	src/main.c\
 		src/map_scan_utils.c\
 		src/so_long_utils1.c\
 		src/ft_itoa.c\
+		src/init_and_filler.c\
+		src/displayer.c\
+		src/hooks.c\
 		gnl/get_next_line.c\
 		gnl/get_next_line_utils.c\
 
