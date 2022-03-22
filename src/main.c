@@ -84,16 +84,16 @@ int	panic_free(struct s_so_long *so_long, t_vars *vars)
 	// 		free(so_long->hero);
 	// 	free(so_long);
 	// }
-	// if (vars && vars->img && vars->mlx)
-	// 	mlx_destroy_image(vars->mlx, vars->img);
-	// if (vars && vars->mlx_win && vars->mlx)
-	// 	mlx_destroy_window(vars->mlx, vars->mlx_win);
-	// if (vars && vars->mlx)
-	// 	mlx_destroy_display(vars->mlx);
-	// if (vars && vars->mlx)
-	// 	free(vars->mlx);
-	// if (vars)
-	// 	free(vars);
+	if (vars && vars->img && vars->mlx)
+		mlx_destroy_image(vars->mlx, vars->img);
+	if (vars && vars->mlx_win && vars->mlx)
+		mlx_destroy_window(vars->mlx, vars->mlx_win);
+	if (vars && vars->mlx)
+		mlx_destroy_display(vars->mlx);
+	if (vars && vars->mlx)
+		free(vars->mlx);
+	if (vars)
+		free(vars);
 	exit(0);
 }
 // Permet d'initialiser les variables de la structure
