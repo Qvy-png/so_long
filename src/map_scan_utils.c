@@ -89,7 +89,7 @@ int	is_supposed_to_be_in_map(struct s_so_long *so_long)
 		if (so_long->map_string[i] == 'C')
 			collec_num++;
 	}
-	if (player_num < 1 || player_num >= 2 || exit_num < 1 || collec_num < 1)
+	if (player_num != 1 || exit_num < 1 || collec_num < 1)
 		return (0);
 	return (1);
 }
