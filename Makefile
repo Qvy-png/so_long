@@ -55,7 +55,7 @@ fclean: clean
 re: fclean all
 
 norme:
-	@norminette -R CheckForbiddenSourceHeader $(SRC) -s
+	@norminette -R CheckForbiddenSourceHeader $(SRC) 
 
 sanit:
 	@echo " Compiling with fsanitize..."

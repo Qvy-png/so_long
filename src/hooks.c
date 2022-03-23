@@ -34,24 +34,26 @@ int	key_hook(int keycode, t_vars *vars)
 {
 	char	min;
 	char	pos;
-	
+	int		step;
+
 	if (keycode == 119)
 		if (s()->hero->y > 48
 			&& s()->map[(s()->hero->y / 48) - 1][s()->hero->x / 48] != '1')
-			s()->steps = key_hook_simplifyer('y', '-', s()->steps, vars);
+			step = key_hook_simplifyer('y', '-', s()->steps, vars);
 	if (keycode == 97)
 		if (s()->hero->x > 48
 			&& s()->map[(s()->hero->y / 48)][s()->hero->x / 48 - 1] != '1')
-			s()->steps = key_hook_simplifyer('x', '-', s()->steps, vars);
+			step = key_hook_simplifyer('x', '-', s()->steps, vars);
 	if (keycode == 115)
 		if (s()->hero->y < (s()->map_y * 48) - 96
 			&& s()->map[(s()->hero->y / 48) + 1][s()->hero->x / 48] != '1')
-			s()->steps = key_hook_simplifyer('y', '+', s()->steps, vars);
+			step = key_hook_simplifyer('y', '+', s()->steps, vars);
 	if (keycode == 100)
 		if (s()->hero->x < (s()->map_x * 48) - 96
 			&& s()->map[(s()->hero->y / 48)][s()->hero->x / 48 + 1] != '1')
-			s()->steps = key_hook_simplifyer('x', '+', s()->steps, vars);
+			step = key_hook_simplifyer('x', '+', s()->steps, vars);
 	if (keycode == 65307)
 		demallocage(vars);
+	s()->steps = step;
 	return (0);
 }
