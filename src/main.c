@@ -73,20 +73,29 @@ void	exec(struct s_so_long *so_long, t_vars *vars)
 void	map_wiring(struct s_so_long *so_long, int i, t_vars *vars)
 {
 	if (i == 0)
-		printf("Error :\nMap too small!\n");
+		ft_printf("Error :\nMap too small!\n");
 	else if (i == -1)
-		printf("Error :\nMap is not rectangle\n");
+		ft_printf("Error :\nMap is not rectangle\n");
 	else if (i == -2)
-		printf("Error :\nFile doesn't exist\n");
+		ft_printf("Error :\nFile doesn't exist\n");
 	else if (i == -3)
-		printf("Error :\nIncorrect map\n");
+		ft_printf("Error :\nIncorrect map\n");
 	else if (i == -4)
-		printf("Error :\nIncorrect (amount of) char found in map\n");
+		ft_printf("Error :\nIncorrect (amount of) char found in map\n");
 	else
-	{
-		printf("%s\n", so_long->map_string);
 		exec(so_long, vars);
-	}
+}
+
+// Fonction auxilière du main, permet de passer la norminette
+
+void	main_helper(struct s_so_long *so_long, t_vars *vars, char **argv)
+{
+	int	i;
+
+	i = 0;
+	i = filler(so_long, argv, vars);
+	map_wiring(so_long, i, vars);
+	demallocage(vars);
 }
 
 // Main, gère certaines erreurs et lance dans le programme les arguments
@@ -95,7 +104,6 @@ int	main(int argc, char **argv)
 {
 	struct s_so_long	*so_long;
 	t_vars				*vars;
-	int					i;
 
 	if (argc > 1 && argc < 3)
 	{
@@ -110,14 +118,12 @@ int	main(int argc, char **argv)
 			so_long->hero = malloc(sizeof(t_hero));
 			if (!so_long->hero)
 				return (0);
-			i = filler(so_long, argv, vars);
-			map_wiring(so_long, i, vars);
-			demallocage(vars);
+			main_helper(so_long, vars, argv);
 		}
 		else
-			printf("Error :\nWrong file type!\n");
+			ft_printf("Error :\nWrong file type!\n");
 	}
 	else
-		printf("Error :\nArgument number incorrect!\n");
+		ft_printf("Error :\nArgument number incorrect!\n");
 	return (0);
 }

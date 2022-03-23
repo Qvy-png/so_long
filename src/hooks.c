@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hooks.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rdel-agu <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/23 13:36:22 by rdel-agu          #+#    #+#             */
+/*   Updated: 2022/03/23 13:36:24 by rdel-agu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/so_long.h"
 
 //Permet de simplifier keyhook, ainsi que de ne pas compter quand on avance dans
@@ -23,7 +35,7 @@ int	key_hook_simplifyer(char hero, char c, int i, t_vars *vars)
 			s()->hero->x += 48;
 	}
 	i++;
-	printf("Vous avez fait %d pas!\n", i);
+	ft_printf("Vous avez fait %d pas!\n", i);
 	return (i);
 }
 
@@ -32,9 +44,9 @@ int	key_hook_simplifyer(char hero, char c, int i, t_vars *vars)
 
 int	key_hook(int keycode, t_vars *vars)
 {
-	char	min;
-	char	pos;
-	int		step;
+	char			min;
+	char			pos;
+	static int		step = 0;
 
 	if (keycode == 119)
 		if (s()->hero->y > 48

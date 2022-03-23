@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   displayer.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rdel-agu <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/23 13:36:35 by rdel-agu          #+#    #+#             */
+/*   Updated: 2022/03/23 13:36:36 by rdel-agu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/so_long.h"
 
 //Permet d'afficher une texture
@@ -14,7 +26,7 @@ void	display_stuff(t_vars *vars, char *str, int x, int y)
 	vars->img = mlx_xpm_file_to_image(vars->mlx, str, &width, &height);
 	if (vars->img == NULL)
 	{
-		printf("xmp lecture has failed\n");
+		ft_printf("xmp lecture has failed\n");
 		demallocage(vars);
 		exit(0);
 	}
@@ -67,7 +79,7 @@ int	display_map(t_vars *vars)
 	if (s()->collect_num <= 0
 		&& s()->map[s()->hero->y / 48][s()->hero->x / 48] == EXIT)
 	{
-		printf("Bien joué, vous avez gagné!!\n");
+		ft_printf("Bien joué, vous avez gagné!!\n");
 		demallocage(vars);
 	}
 	if (s()->map[s()->hero->y / 48][s()->hero->x / 48] == COLLECTIBLE)

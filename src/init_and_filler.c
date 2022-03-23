@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_and_filler.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rdel-agu <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/23 13:36:47 by rdel-agu          #+#    #+#             */
+/*   Updated: 2022/03/23 13:36:48 by rdel-agu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/so_long.h"
 
 // Singleton, permet d'utiliser une structure avec un comportement de variable
@@ -48,7 +60,7 @@ void	init_so_long(struct s_so_long *so_long, t_vars *vars)
 
 // Seconde la fonction filler, permet de faire une extention de cette dernière
 
-void	filler_sec(struct s_so_long *so_long, char **argv, t_vars *vars)
+void	filler_(struct s_so_long *so_long, char **argv, t_vars *vars)
 {
 	so_long->collect_num = cnt_collect(so_long->map_string);
 	close(so_long->file_fd);
@@ -81,7 +93,7 @@ int	filler(struct s_so_long *so_long, char **argv, t_vars *vars)
 		return (0);
 	if (so_long->is_rectangle == 0)
 		return (-1);
-	filler_sec(so_long, argv, vars);
+	filler_(so_long, argv, vars);
 	if (map_filler(so_long) != 1)
 		return (-3);
 	record_hero(so_long);
