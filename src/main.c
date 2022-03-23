@@ -19,20 +19,17 @@ int	demallocage(t_vars *vars)
 	int	i;
 
 	i = 0;
-	if (s())
-	{
-		if (s()->map_string)
-			free(s()->map_string);
-		if (s()->map)
-			free_array(s()->map);
-		if (s()->file_fd)
-			close(s()->file_fd);
-		while (i != NBR_TXTR)
-			free(s()->txtr[i++]);
-		if (s()->hero)
-			free(s()->hero);
-		free(s());
-	}
+	if (s() && s()->map_string)
+		free(s()->map_string);
+	if (s() && s()->map)
+		free_array(s()->map);
+	if (s() && s()->file_fd)
+		close(s()->file_fd);
+	while (i != NBR_TXTR)
+		free(s()->txtr[i++]);
+	if (s() && s()->hero)
+		free(s()->hero);
+	free(s());
 	if (vars && vars->img && vars->mlx)
 		mlx_destroy_image(vars->mlx, vars->img);
 	if (vars && vars->mlx_win && vars->mlx)

@@ -29,23 +29,36 @@ SRC =	src/main.c\
 all: $(NAME)
 
 %.o: %.c
-	$(CC)  -I/usr/include -Imlx_linux -O3 -c $< -o $@
+	@$(CC)  -I/usr/include -Imlx_linux -O3 -c $< -o $@
 		
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) -g -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
-
+	@echo " \033[0;31mCompiling mlx...\033[0m"
+	@sleep 0.5
+	@echo " \033[1;31mWait ...\033[0m"
+	@make -C mlx_linux/ -s
+	@sleep 0.8
+	@echo " \033[0;32mSuccess!\033[0m"
+	@echo " \033[0;31mCompiling so_long...\033[0m"
+	@$(CC) $(OBJ) -g -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME) -s
+	@sleep 0.5
+	@echo " \033[1;31mWait ...\033[0m"
+	@sleep 0.8
+	@echo " \033[0;32mSuccess!\033[0m"
 clean:
-	$(RM) -f $(OBJ)
+	@$(RM) -f $(OBJ)
+	@make clean -C mlx_linux -s
+	@echo " \033[0;32mCleaning done!\033[0m"
 
 fclean: clean
-	$(RM) -f $(NAME)
+	@$(RM) -f $(NAME) 
 
 re: fclean all
 
 norme:
-	norminette -R CheckForbiddenSourceHeader $(SRC)
+	@norminette -R CheckForbiddenSourceHeader $(SRC) -s
 
 sanit:
-	$(CC) $(OBJ) -fsanitize=address -g3 -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME)
-
+	@echo " Compiling with fsanitize..."
+	@$(CC) $(OBJ) -fsanitize=address -g3 -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME) -s
+	@echo " Done!"
 .PHONY: clean fclean
