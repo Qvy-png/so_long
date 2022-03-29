@@ -65,10 +65,17 @@ void	display_map_sec(t_vars *vars)
 
 int	display_map(t_vars *vars)
 {
+	char	*str;
+
+	str = ft_itoa(s()->steps);
 	s()->x = 0;
 	s()->y = 0;
 	while (s()->y < s()->map_y)
+	{	
+		mlx_string_put(vars->mlx, vars->mlx_win, 20, 20, 0x0ffffff, str);
 		display_map_sec(vars);
+	}
+	free(str);
 	if (s()->collect_num <= 0
 		&& s()->map[s()->hero->y / 48][s()->hero->x / 48] == EXIT)
 	{

@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = so_long
-CC = gcc
+CC = gcc -Wall -Werror -Wextra
 RM = rm
 OBJ = $(SRC:.c=.o)
 SRC =	src/main.c\
@@ -23,6 +23,20 @@ SRC =	src/main.c\
 		src/init_and_filler.c\
 		src/displayer.c\
 		src/hooks.c\
+		gnl/get_next_line.c\
+		gnl/get_next_line_utils.c\
+
+OBJB = $(BONUS:.c=.o)
+
+BONUS = bonus/main.c\
+		bonus/map_alloc.c\
+		bonus/map_scan.c\
+		bonus/map_scan_utils.c\
+		bonus/so_long_utils1.c\
+		bonus/ft_itoa.c\
+		bonus/init_and_filler.c\
+		bonus/displayer.c\
+		bonus/hooks.c\
 		gnl/get_next_line.c\
 		gnl/get_next_line_utils.c\
 
@@ -53,8 +67,14 @@ $(NAME): $(OBJ)
 	@$(CC) $(OBJ) -g  -Lft_printf -lft_printf -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz  -o $(NAME) -s
 	@echo " \033[0;32mSuccess!\033[0m"
 
+bonus:	$(OBJB)
+	@echo " \033[0;31mCompiling so_long bonuses...\033[0m"
+	@$(CC) $(OBJB) -g  -Lft_printf -lft_printf -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz  -o $(NAME) -s
+	@echo " \033[0;32mSuccess!\033[0m"
+
 clean:
 	@$(RM) -f $(OBJ)
+	@$(RM) -f $(OBJB)
 	@make fclean -C ft_printf -s
 	@make clean -C mlx_linux -s
 	@echo " \033[0;32mCleaning done!\033[0m"
@@ -74,7 +94,10 @@ norme:
 	@echo " \033[0;32mDone!\033[0m"
 
 sanit:
-	@echo " Compiling with fsanitize..."
-	@$(CC) $(OBJ) -fsanitize=address -g3 -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME) -s
-	@echo " Done!"
+	@echo " \033[0;31mCompiling ft_printf...\033[0m"
+	@make -C ft_printf/ -s
+	@echo " \033[0;32mSuccess!\033[0m"
+	@echo " \033[0;31mCompiling with fsanitize...\033[0m"
+	@$(CC) $(OBJ) -fsanitize=address -g3 -Lft_printf -lft_printf -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(NAME) -s
+	@echo " \033[0;32mSuccess!\033[0m"
 .PHONY: clean fclean

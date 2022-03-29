@@ -91,6 +91,7 @@ char				*ft_strdup(char *src);
 
 void				free_array(char **twoD);
 void				display_map_sec(t_vars *vars);
+void				filler_(struct s_so_long *so_long);
 void				map_size(struct s_so_long *so_long);
 void				map_alloc(struct s_so_long *so_long);
 void				record_hero(struct s_so_long *so_long);
@@ -101,6 +102,5 @@ void				display_simplifyer(t_vars *vars, char c, char *str);
 void				display_stuff(t_vars *vars, char *str, int x, int y);
 void				init_so_long(struct s_so_long *so_long, t_vars *vars);
 void				map_wiring(struct s_so_long *so_long, int i, t_vars *vars);
-void				filler_(struct s_so_long *so_long, char **av, t_vars *vars);
 
 #endif
