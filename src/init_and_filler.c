@@ -6,7 +6,7 @@
 /*   By: rdel-agu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 13:36:47 by rdel-agu          #+#    #+#             */
-/*   Updated: 2022/03/23 13:36:48 by rdel-agu         ###   ########.fr       */
+/*   Updated: 2022/04/05 14:19:54 by rdel-agu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ void	init_so_long(struct s_so_long *so_long, t_vars *vars)
 	so_long->txtr[FLOOR_TXTR] = ft_strdup("images/floor.xpm");
 	so_long->txtr[COLLECTIBLE_TXTR] = ft_strdup("images/collectible.xpm");
 	so_long->txtr[EXIT_TXTR] = ft_strdup("images/exit.xpm");
+	if (!so_long->txtr[HERO_TXTR] || !so_long->txtr[HERO_TXTR] || !so_long->txtr[HERO_TXTR] || !so_long->txtr[HERO_TXTR] || !so_long->txtr[HERO_TXTR])
+		demallocage(vars);
 	so_long->collect_num = 0;
 	so_long->ex = 0;
 	so_long->her = 0;
