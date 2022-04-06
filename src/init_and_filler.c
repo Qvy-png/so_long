@@ -28,6 +28,8 @@ struct s_so_long	*s(void)
 	return (s);
 }
 
+//	Fonction secondaire de init_so_long
+
 void	second_init(t_vars *vars)
 {
 	vars->mlx = NULL;
