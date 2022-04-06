@@ -28,6 +28,14 @@ struct s_so_long	*s(void)
 	return (s);
 }
 
+void	second_init(t_vars *vars)
+{
+	vars->mlx = NULL;
+	vars->addr = NULL;
+	vars->img = NULL;
+	vars->mlx_win = NULL;
+}
+
 // Permet d'initialiser toutes les variables à une valeur de base
 
 void	init_so_long(struct s_so_long *so_long, t_vars *vars)
@@ -47,17 +55,16 @@ void	init_so_long(struct s_so_long *so_long, t_vars *vars)
 	so_long->txtr[FLOOR_TXTR] = ft_strdup("images/floor.xpm");
 	so_long->txtr[COLLECTIBLE_TXTR] = ft_strdup("images/collectible.xpm");
 	so_long->txtr[EXIT_TXTR] = ft_strdup("images/exit.xpm");
-	if (!so_long->txtr[HERO_TXTR] || !so_long->txtr[HERO_TXTR] || !so_long->txtr[HERO_TXTR] || !so_long->txtr[HERO_TXTR] || !so_long->txtr[HERO_TXTR])
+	if (!so_long->txtr[HERO_TXTR] || !so_long->txtr[HERO_TXTR]
+		|| !so_long->txtr[HERO_TXTR] || !so_long->txtr[HERO_TXTR]
+		|| !so_long->txtr[HERO_TXTR])
 		demallocage(vars);
 	so_long->collect_num = 0;
 	so_long->ex = 0;
 	so_long->her = 0;
 	so_long->col = 0;
 	so_long->steps = 0;
-	vars->mlx = NULL;
-	vars->addr = NULL;
-	vars->img = NULL;
-	vars->mlx_win = NULL;
+	second_init(vars);
 }
 
 // Seconde la fonction filler, permet de faire une extention de cette dernière
